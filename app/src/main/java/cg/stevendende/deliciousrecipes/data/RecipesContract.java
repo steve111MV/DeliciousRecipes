@@ -49,12 +49,17 @@ public class RecipesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static long getRecipeIdFromUri(Uri uri) {
+            return Long.parseLong(uri.getLastPathSegment());
+        }
+
         public static final String[] COLUMNS_RECIPES = new String[]{
                 RecipesContract.RecipeEntry.TABLE_NAME+"."+RecipesContract.RecipeEntry._ID,
                 RecipesContract.RecipeEntry.TABLE_NAME+"."+ RecipeEntry.COLUMN_NAME,
                 RecipesContract.RecipeEntry.TABLE_NAME+"."+RecipesContract.RecipeEntry.COLUMN_SERVINGS,
                 RecipesContract.RecipeEntry.TABLE_NAME+"."+RecipesContract.RecipeEntry.COLUMN_IMAGE
         };
+
     }
 
     /* Inner class that defines the table contents of Ingredients table */
