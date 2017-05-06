@@ -12,12 +12,12 @@ import com.android.volley.toolbox.Volley;
 public class MyApplication extends Application {
     private static MyApplication mInstance;
     private RequestQueue mRequestQueue;
-    private static Context mCtx;
+    private Context mContext;
 
     public MyApplication(){ }
 
     private MyApplication(Context context) {
-        Context mContext = context;
+        mContext = context;
         mRequestQueue = getRequestQueue();
     }
 
@@ -32,7 +32,7 @@ public class MyApplication extends Application {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
-            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+            mRequestQueue = Volley.newRequestQueue(mContext.getApplicationContext());
         }
         return mRequestQueue;
     }
