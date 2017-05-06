@@ -20,20 +20,30 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import cg.stevendende.deliciousrecipes.MyApplication;
 import cg.stevendende.deliciousrecipes.R;
+import cg.stevendende.deliciousrecipes.data.RecipesContract;
 import cg.stevendende.deliciousrecipes.volley.CustomJSONArrayRequest;
 
 public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public final String LOG_TAG = RecipesSyncAdapter.class.getSimpleName();
-    public static final String RECIPES_JSON_URL = "http://go.udacity.com/android-baking-app-json";
+    public static final String RECIPES_JSON_URL_REDIRECT = "http://go.udacity.com/android-baking-app-json";
+    public static final String RECIPES_JSON_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58d1537b_baking/baking.json";
 
     // Interval at which to sync with the API, in seconds.
     // 60 seconds (1 minute) * 2 = 2 mins
     public static final int SYNC_INTERVAL = 10 * 60 * 60;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/2;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 2;
 
     public RecipesSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -41,6 +51,7 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+
 
         CustomJSONArrayRequest jsonRequest = new CustomJSONArrayRequest(
                 RECIPES_JSON_URL,
@@ -54,12 +65,13 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-
+                        getContext().getContentResolver().notifyChange(RecipesContract.RecipeEntry.CONTENT_URI, null);
                     }
                 }
         );
 
         MyApplication.getInstance(getContext()).addToRequestQueue(jsonRequest);
+
     }
 
     /**
@@ -83,6 +95,7 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Helper method to have the sync adapter sync immediately
+     *
      * @param context The context used to access the account service
      */
     public static void syncImmediately(Context context) {
@@ -110,7 +123,7 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
                 context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
 
         // If the password doesn't exist, the account doesn't exist
-        if ( null == accountManager.getPassword(newAccount) ) {
+        if (null == accountManager.getPassword(newAccount)) {
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.

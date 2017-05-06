@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Delicious Recipes</string>
 
+
     <!-- SyncAdapter related -->
     <string name="sync_account_type" translatable="false">deliciousrecipes.stevendende.cg</string>
     <string name="content_authority" translatable="false">cg.stevendende.deliciousrecipes</string>
+
+    <!-- dependency resources : values deferenciated by screen sizes
+         and API versions -->
+    <!-- this value takes "true" from API 21 -->
+    <string name="fits_system_windows">false</string>
 
 </resources>

@@ -1,0 +1,7 @@
+<resources>
+
+    <!-- dependency resources : values deferenciated by screen sizes
+         and API versions -->
+    <string name="fits_system_windows">true</string>
+
+</resources>
