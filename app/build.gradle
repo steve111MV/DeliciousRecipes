@@ -17,6 +17,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFile "proguard-butterknife-7.pro"
+            proguardFile "proguard-glide-rules.pro"
             proguardFile "proguard-support-v7-appcompat.pro"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -28,9 +29,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
 
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.jakewharton:butterknife:8.4.0'
+
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     testCompile 'junit:junit:4.12'
 }
