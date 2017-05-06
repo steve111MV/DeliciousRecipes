@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2017 Steve NDENDE, www.github.com/steve111MV/DeliciousRecipes
+ */
+
 package cg.stevendende.deliciousrecipes.data;
 
 import android.annotation.TargetApi;
@@ -18,8 +22,6 @@ import android.util.Log;
  */
 
 public class RecipesContentProvider extends ContentProvider {
-
-
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();

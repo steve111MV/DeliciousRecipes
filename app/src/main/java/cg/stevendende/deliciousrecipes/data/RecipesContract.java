@@ -1,13 +1,13 @@
+/*
+ * Copyright (C) 2017 Steve NDENDE, www.github.com/steve111MV/DeliciousRecipes
+ */
+
 package cg.stevendende.deliciousrecipes.data;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-
-/**
- * Created by STEVEN on 06/05/2017.
- */
 
 public class RecipesContract {
 

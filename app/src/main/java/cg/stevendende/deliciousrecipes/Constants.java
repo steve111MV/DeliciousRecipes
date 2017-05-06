@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2017 Steve NDENDE, www.github.com/steve111MV/DeliciousRecipes
+ */
+
 package cg.stevendende.deliciousrecipes;
 
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
