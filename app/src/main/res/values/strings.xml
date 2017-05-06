@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Delicious Recipes</string>
+
+
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type" translatable="false">deliciousrecipes.stevendende.cg</string>
+    <string name="content_authority" translatable="false">cg.stevendende.deliciousrecipes</string>
+
 </resources>
