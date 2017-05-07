@@ -9,6 +9,7 @@ import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncRequest;
 import android.content.SyncResult;
@@ -22,13 +23,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
+import cg.stevendende.deliciousrecipes.ApiJSONParser;
 import cg.stevendende.deliciousrecipes.MyApplication;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
@@ -59,7 +54,26 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonArray) {
-                        Log.e(LOG_TAG, jsonArray.toString());
+                        Log.i(LOG_TAG, jsonArray.toString());
+                        int recipesInsertCount = 0;
+                        int ingredientsInsertCount = 0;
+                        int stepsInsertCount = 0;
+
+                        try {
+                            final int INDEX_RECIPES = 0, INDEX_INGREDIENTS = 1, INDE_STEPS = 2;
+                            //0:recipes, 1: ingredients, 2:steps
+                            Object[] apiObjects = ApiJSONParser.parseJson(jsonArray);
+
+                            recipesInsertCount = getContext().getContentResolver().bulkInsert(RecipesContract.RecipeEntry.CONTENT_URI, (ContentValues[]) apiObjects[INDEX_RECIPES]);
+                            ingredientsInsertCount = getContext().getContentResolver().bulkInsert(RecipesContract.IngredientEntry.CONTENT_URI, (ContentValues[]) apiObjects[INDEX_INGREDIENTS]);
+                            stepsInsertCount = getContext().getContentResolver().bulkInsert(RecipesContract.RecipeStepEntry.CONTENT_URI, (ContentValues[]) apiObjects[INDE_STEPS]);
+
+                            Log.i(LOG_TAG, "inserted recipes " + recipesInsertCount);
+                            Log.i(LOG_TAG, "inserted ingredients for all " + ingredientsInsertCount);
+                            Log.i(LOG_TAG, "inserted steps for all " + stepsInsertCount);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
