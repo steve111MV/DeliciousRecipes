@@ -60,7 +60,8 @@ public class RecipesContentProvider extends ContentProvider {
      */
     @Override
     public boolean onCreate() {
-        return false;
+        mOpenHelper = new RecipesDBHelper(getContext());
+        return true;
     }
 
 
