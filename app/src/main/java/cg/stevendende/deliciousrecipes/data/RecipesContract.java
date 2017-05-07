@@ -60,6 +60,11 @@ public class RecipesContract {
                 RecipesContract.RecipeEntry.TABLE_NAME+"."+RecipesContract.RecipeEntry.COLUMN_IMAGE
         };
 
+        public static final int INDEX_ID = 0;
+        public static final int INDEX_NAME = 1;
+        public static final int INDEX_SERVINGS = 2;
+        public static final int INDEX_IMAGE = 3;
+
     }
 
     /* Inner class that defines the table contents of Ingredients table */

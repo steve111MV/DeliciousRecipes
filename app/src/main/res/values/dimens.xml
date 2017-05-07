@@ -4,4 +4,13 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="toolbar_margin_top">24dp</dimen>
     <dimen name="toolbar_elevation">2dp</dimen>
+    <dimen name="item_recipe_text_size">29sp</dimen>
+    <dimen name="item_recipe_image_height">180dp</dimen>
+    <dimen name="item_recipe_tv_name_padding_with_image">4dp</dimen>
+    <dimen name="item_recipe_tv_name_padding">10dp</dimen>
+    <dimen name="item_recipe_tv_name_padding_top">10dp</dimen>
+    <dimen name="item_recipe_tv_name_padding_bottom">10dp</dimen>
+    <dimen name="item_recipe_tv_name_padding_left">5dp</dimen>
+    <dimen name="item_recipe_tv_name_padding_right">5dp</dimen>
+    <dimen name="item_recipe_text_size_with_image">22sp</dimen>
 </resources>

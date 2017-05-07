@@ -64,9 +64,18 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
                             //0:recipes, 1: ingredients, 2:steps
                             Object[] apiObjects = ApiJSONParser.parseJson(jsonArray);
 
-                            recipesInsertCount = getContext().getContentResolver().bulkInsert(RecipesContract.RecipeEntry.CONTENT_URI, (ContentValues[]) apiObjects[INDEX_RECIPES]);
-                            ingredientsInsertCount = getContext().getContentResolver().bulkInsert(RecipesContract.IngredientEntry.CONTENT_URI, (ContentValues[]) apiObjects[INDEX_INGREDIENTS]);
-                            stepsInsertCount = getContext().getContentResolver().bulkInsert(RecipesContract.RecipeStepEntry.CONTENT_URI, (ContentValues[]) apiObjects[INDE_STEPS]);
+                            recipesInsertCount = getContext()
+                                    .getContentResolver()
+                                    .bulkInsert(RecipesContract.RecipeEntry.CONTENT_URI,
+                                            (ContentValues[]) apiObjects[INDEX_RECIPES]);
+                            ingredientsInsertCount = getContext()
+                                    .getContentResolver()
+                                    .bulkInsert(RecipesContract.IngredientEntry.CONTENT_URI,
+                                            (ContentValues[]) apiObjects[INDEX_INGREDIENTS]);
+                            stepsInsertCount = getContext()
+                                    .getContentResolver()
+                                    .bulkInsert(RecipesContract.RecipeStepEntry.CONTENT_URI,
+                                            (ContentValues[]) apiObjects[INDE_STEPS]);
 
                             Log.i(LOG_TAG, "inserted recipes " + recipesInsertCount);
                             Log.i(LOG_TAG, "inserted ingredients for all " + ingredientsInsertCount);
