@@ -27,14 +27,16 @@ public class Constants {
 
 
     // Create a table to hold Recipe Ingredients
-    public static final String SQL_CREATE_RECIPE_INGREDIENTS_TABLE = "CREATE TABLE " + RecipesContract.RecipeEntry.TABLE_NAME + " (" +
+    public static final String SQL_CREATE_RECIPE_INGREDIENTS_TABLE = "CREATE TABLE " + RecipesContract.IngredientEntry.TABLE_NAME + " (" +
 
             // the ID of the recipe entry as returned by the API
-            RecipesContract.IngredientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            RecipesContract.IngredientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
             RecipesContract.IngredientEntry.COLUMN_QUANTITY + " DOUBLE DEFAULT 0, " +
-            RecipesContract.IngredientEntry.COLUMN_MEASURE + " TEXT," +
-            RecipesContract.IngredientEntry.COLUMN_INGREDIENT+ " TEXT NOT NULL," +
+            RecipesContract.IngredientEntry.COLUMN_MEASURE + " TEXT , " +
+            RecipesContract.IngredientEntry.COLUMN_INGREDIENT + " TEXT NOT NULL , " +
+
+            RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + " INTEGER, " +
 
             // Set up the "RecipeStepEntry.COLUMN_RECIPE_ID" column
             // as a foreign key to recipes table.
@@ -53,7 +55,7 @@ public class Constants {
             RecipesContract.RecipeStepEntry.COLUMN_VIDEO_URL + " TEXT, " +
             RecipesContract.RecipeStepEntry.COLUMN_IMAGE_URL + " TEXT, " +
 
-            RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " INTEGER," +
+            RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " INTEGER, " +
 
             // Set up the "IngredientEntry.COLUMN_RECIPE_ID" column
             // as a foreign key to recipes table.
@@ -64,4 +66,22 @@ public class Constants {
             // we create a UNIQUE constraint
             " UNIQUE (" + RecipesContract.RecipeStepEntry._ID + ") );";
 
+    //API JSON parsing
+    public static final String TAG_RECIPE_ID = "id";
+    public static final String TAG_RECIPE_NAME = "name";
+    public static final String TAG_RECIPE_SERVINGS = "servings";
+    public static final String TAG_RECIPE_IMAGE = "image";
+
+    public static final String TAG_RECIPE_INGREDIENTS = "ingredients";
+    public static final String TAG_RECIPE_STEPS = "steps";
+
+    public static final String TAG_INGREDIENT_QUANTITY = "quantity";
+    public static final String TAG_INGREDIENT_MEASURE = "measure";
+    public static final String TAG_INGREDIENT_NAME = "ingredient";
+
+    public static final String TAG_STEP_ID = "id";
+    public static final String TAG_STEP_SHORT_DESCRIPTION = "shortDescription";
+    public static final String TAG_STEP_DESCRIPTION = "description";
+    public static final String TAG_STEP_VIDEO_URL = "videoURL";
+    public static final String TAG_STEP_IMAGE_URL = "thumbnailURL";
 }
