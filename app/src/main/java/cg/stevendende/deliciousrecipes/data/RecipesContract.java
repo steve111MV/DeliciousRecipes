@@ -83,6 +83,8 @@ public class RecipesContract {
         public static final String COLUMN_MEASURE = "measure";
         public static final String COLUMN_INGREDIENT = "ingredient";
 
+        public static final String COLUMN_UNIQUE_FIELD = "unique_field";
+
         public static final String COLUMN_RECIPE_ID = "recipe_id";
 
         public static Uri buildIngedientUri(long id) {
@@ -114,6 +116,7 @@ public class RecipesContract {
         public static final String COLUMN_VIDEO_URL = "video_url";
         public static final String COLUMN_IMAGE_URL = "thumbnail_url";
 
+        public static final String COLUMN_UNIQUE_FIELD = "unique_field";
         public static final String COLUMN_RECIPE_ID = "recipe_id";
 
         public static Uri buildStepUri(long id) {

@@ -32,17 +32,21 @@ public class Constants {
             // the ID of the recipe entry as returned by the API
             RecipesContract.IngredientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-            RecipesContract.IngredientEntry.COLUMN_QUANTITY + " DOUBLE DEFAULT 0, " +
-            RecipesContract.IngredientEntry.COLUMN_MEASURE + " TEXT , " +
-            RecipesContract.IngredientEntry.COLUMN_INGREDIENT + " TEXT NOT NULL , " +
+            RecipesContract.IngredientEntry.COLUMN_QUANTITY + " DOUBLE, " +
+            RecipesContract.IngredientEntry.COLUMN_MEASURE + " TEXT, " +
+            RecipesContract.IngredientEntry.COLUMN_INGREDIENT + " TEXT, " +
 
+            RecipesContract.IngredientEntry.COLUMN_UNIQUE_FIELD + " TEXT NOT NULL, " +
             RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + " INTEGER, " +
 
             // Set up the "RecipeStepEntry.COLUMN_RECIPE_ID" column
             // as a foreign key to recipes table.
-            " FOREIGN KEY (" + RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + ") REFERENCES " +
-            RecipesContract.RecipeEntry.TABLE_NAME + " (" + RecipesContract.RecipeEntry._ID + ") );";
+            " FOREIGN KEY (" + RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + ") REFERENCES " +
+            RecipesContract.RecipeEntry.TABLE_NAME + " (" + RecipesContract.RecipeEntry._ID + "), "
 
+            // To ensure the application doesn't duplicate recipes,
+            // we create a UNIQUE constraint
+            + " UNIQUE (" + RecipesContract.IngredientEntry.COLUMN_UNIQUE_FIELD + ") );";
 
     // Create a table to hold Recipes
     public static final String SQL_CREATE_RECIPE_STEPS_TABLE = "CREATE TABLE " + RecipesContract.RecipeStepEntry.TABLE_NAME + " (" +
@@ -55,16 +59,17 @@ public class Constants {
             RecipesContract.RecipeStepEntry.COLUMN_VIDEO_URL + " TEXT, " +
             RecipesContract.RecipeStepEntry.COLUMN_IMAGE_URL + " TEXT, " +
 
+            RecipesContract.RecipeStepEntry.COLUMN_UNIQUE_FIELD + " TEXT NOT NULL, " +
             RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " INTEGER, " +
 
             // Set up the "IngredientEntry.COLUMN_RECIPE_ID" column
             // as a foreign key to recipes table.
-            " FOREIGN KEY (" + RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + ") REFERENCES " +
+            " FOREIGN KEY (" + RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + ") REFERENCES " +
             RecipesContract.RecipeEntry.TABLE_NAME + " (" + RecipesContract.RecipeEntry._ID + "), " +
 
             // To ensure the application doesn't duplicate recipes,
             // we create a UNIQUE constraint
-            " UNIQUE (" + RecipesContract.RecipeStepEntry._ID + ") );";
+            " UNIQUE (" + RecipesContract.RecipeStepEntry.COLUMN_UNIQUE_FIELD + ") );";
 
     //API JSON parsing
     public static final String TAG_RECIPE_ID = "id";
@@ -84,4 +89,5 @@ public class Constants {
     public static final String TAG_STEP_DESCRIPTION = "description";
     public static final String TAG_STEP_VIDEO_URL = "videoURL";
     public static final String TAG_STEP_IMAGE_URL = "thumbnailURL";
+
 }
