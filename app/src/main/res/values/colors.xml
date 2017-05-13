@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="recipe_step_tv_color">#212121</color>
+    <color name="recipe_step_tv_color">#7a7a7a</color>
+    <color name="app_main_color">#fefefe</color>
 </resources>

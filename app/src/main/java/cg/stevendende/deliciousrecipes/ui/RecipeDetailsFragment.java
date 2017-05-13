@@ -3,10 +3,12 @@ package cg.stevendende.deliciousrecipes.ui;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,31 +22,71 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
-import cg.stevendende.deliciousrecipes.ui.adapters.RecipesCursorRecyclerAdapter;
+import cg.stevendende.deliciousrecipes.ui.adapters.StepsCursorRecyclerAdapter;
 
 /**
- * Created by STEVEN on 06/05/2017.
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link RecipeDetailsFragment.StepsCallbackInterface} interface
+ * to handle interaction events.
+ * Use the {@link RecipeDetailsFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
+public class RecipeDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    // parameters initialization
+    private static final String EXTRA_RECIPE_ID = "param1";
+    private static final String EXTRA_RECIPE_NAME = "param2";
+    public static final int LOADER_ID = 2;
 
-public class RecipesFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>, RecipesCursorRecyclerAdapter.RecipesAdapterInteractionInterface {
+    private String mRecipeID;
+    private String mRecipeName;
 
-    public static final int LOADER_ID = 1;
-
-    private RecipesFragmentCallbackInterface mListener;
+    private StepsCallbackInterface mListener;
 
     GridLayoutManager mGridLayoutManager;
-    RecipesCursorRecyclerAdapter mCursorAdapter;
+    StepsCursorRecyclerAdapter mCursorAdapter;
 
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.stepsRecyclerView)
     RecyclerView mRecyclerView;
 
-    @Nullable
+
+    public RecipeDetailsFragment() {
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param recipeId   Parameter 1.
+     * @param recipeName Parameter 2.
+     * @return A new instance of fragment RecipeDetailsFragment.
+     */
+    public static RecipeDetailsFragment newInstance(String recipeId, String recipeName) {
+        RecipeDetailsFragment fragment = new RecipeDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString(EXTRA_RECIPE_ID, recipeId);
+        args.putString(EXTRA_RECIPE_NAME, recipeName);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.fragment_recipes, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mRecipeID = getArguments().getString(EXTRA_RECIPE_ID);
+            mRecipeName = getArguments().getString(EXTRA_RECIPE_NAME);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootview = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         ButterKnife.bind(this, rootview);
+
 
         final int SPAN_COUNT = 1;
         mGridLayoutManager = new GridLayoutManager(
@@ -54,12 +96,27 @@ public class RecipesFragment extends Fragment implements
                 false);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
 
-        mCursorAdapter = new RecipesCursorRecyclerAdapter();
+        mCursorAdapter = new StepsCursorRecyclerAdapter();
         mRecyclerView.setAdapter(mCursorAdapter);
 
-        mCursorAdapter.setCallbackListener(this);
-
         return rootview;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof StepsCallbackInterface) {
+            mListener = (StepsCallbackInterface) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     /**
@@ -70,16 +127,22 @@ public class RecipesFragment extends Fragment implements
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public android.support.v4.content.Loader onCreateLoader(int id, Bundle args) {
-
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //build the query
+
+        String selection = RecipesContract.RecipeStepEntry.TABLE_NAME
+                + "." + RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " = ?";
+        String[] selectionArgs = new String[]{mRecipeID};
+
         return new android.support.v4.content.CursorLoader(
                 getActivity(),
-                RecipesContract.RecipeEntry.CONTENT_URI,
-                RecipesContract.RecipeEntry.COLUMNS_RECIPES,
-                null, null,
-                RecipesContract.RecipeEntry.TABLE_NAME
-                        + "." + RecipesContract.RecipeEntry._ID + " DESC");
+                RecipesContract.RecipeStepEntry.CONTENT_URI,
+                RecipesContract.RecipeStepEntry.COLUMNS_STEPS,
+                selection,
+                selectionArgs,
+                RecipesContract.RecipeStepEntry.TABLE_NAME
+                        + "." + RecipesContract.RecipeStepEntry._ID);
+
     }
 
     /**
@@ -122,11 +185,10 @@ public class RecipesFragment extends Fragment implements
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        Log.i("dataSize", data.getCount() + "");
-
-        //pass the data to the CursorAdapter instance
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
+
+        Log.i("data_size", data.getCount() + "");
     }
 
     /**
@@ -137,40 +199,28 @@ public class RecipesFragment extends Fragment implements
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader loader) {
-        //swap a null to the CursorAdapter instance
+    public void onLoaderReset(Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof RecipesFragmentCallbackInterface) {
-            mListener = (RecipesFragmentCallbackInterface) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onItemClick(String itemId, String itemName) {
-        mListener.onRecipeItemClick(itemId, itemName);
-    }
-
-    public interface RecipesFragmentCallbackInterface {
-        void onRecipeItemClick(String id, String name);
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface StepsCallbackInterface {
+        void onStepClickListener(String stepID);
     }
 }

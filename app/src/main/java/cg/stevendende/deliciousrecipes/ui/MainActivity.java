@@ -6,6 +6,7 @@ package cg.stevendende.deliciousrecipes.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +16,9 @@ import butterknife.ButterKnife;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.sync.RecipesSyncAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements RecipesFragment.RecipesFragmentCallbackInterface,
+        RecipeDetailsFragment.StepsCallbackInterface {
 
     private static final long SWIPE_REFRESHING_TIMEOUT = 12000;
     @SuppressWarnings("WeakerAccess")
@@ -64,4 +67,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRecipeItemClick(String id, String name) {
+        /**
+         * - Transition to Details fragment while in onePane
+         * - Show details in second fragments when in twoPanes
+         **/
+        try {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.fragment_container,
+                            RecipeDetailsFragment.newInstance(id, name))
+                    .commit();
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        // here
+        //
+        //
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //here
+        //
+    }
+
+    @Override
+    public void onStepClickListener(String stepID) {
+        //TODO handle step clicks
+    }
 }

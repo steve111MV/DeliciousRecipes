@@ -5,11 +5,11 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type" translatable="false">deliciousrecipes.stevendende.cg</string>
     <string name="content_authority" translatable="false">cg.stevendende.deliciousrecipes</string>
+    <string name="recipe_details_ingeredients">Ingredients ...</string>
 
     <!-- dependency resources : values deferenciated by screen sizes
          and API versions -->
     <!-- this value takes "true" from API 21 -->
     <string name="fits_system_windows">false</string>
-    <string name="recipe_details_ingeredients">Ingredients</string>
 
 </resources>

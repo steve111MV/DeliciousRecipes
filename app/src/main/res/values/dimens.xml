@@ -14,7 +14,8 @@
     <dimen name="item_recipe_tv_name_padding_right">5dp</dimen>
     <dimen name="item_recipe_text_size_with_image">22sp</dimen>
     <dimen name="recipe_details_ingredients_tv_padding">10dp</dimen>
-    <dimen name="recipe_details_steps_top_margin">5dp</dimen>
+    <dimen name="recipe_details_steps_top_margin">1dp</dimen>
     <dimen name="recipe_details_step_tv_size">22sp</dimen>
     <dimen name="recipe_details_ingredient_tv_size">22sp</dimen>
+    <dimen name="recipe_details_step_position_tv_size">16sp</dimen>
 </resources>
