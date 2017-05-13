@@ -6,6 +6,7 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.facebook.stetho.Stetho;
 
 //import info.androidhive.volleyexamples.volley.utils.LruBitmapCache;
 
@@ -14,11 +15,19 @@ public class MyApplication extends Application {
     private RequestQueue mRequestQueue;
     private Context mContext;
 
-    public MyApplication(){ }
+    public void onCreate() {
+        super.onCreate();
+        Stetho.initializeWithDefaults(this);
+    }
+
+    public MyApplication() {
+    }
 
     private MyApplication(Context context) {
         mContext = context;
         mRequestQueue = getRequestQueue();
+
+        //Stetho.initializeWithDefaults(this);
     }
 
     public static synchronized MyApplication getInstance(Context context) {
