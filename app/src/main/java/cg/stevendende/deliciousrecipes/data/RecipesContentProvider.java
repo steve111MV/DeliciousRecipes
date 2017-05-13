@@ -12,6 +12,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -94,112 +95,6 @@ public class RecipesContentProvider extends ContentProvider {
         return matcher;
     }
 
-        /**
-         * Implement this to handle query requests from clients.
-         * This method can be called from multiple threads, as described in
-         * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
-         * and Threads</a>.
-         * <p>
-         * Example client call:<p>
-         * <pre>// Request a specific record.
-         * Cursor managedCursor = managedQuery(
-         * ContentUris.withAppendedId(Contacts.People.CONTENT_URI, 2),
-         * projection,    // Which columns to return.
-         * null,          // WHERE clause.
-         * null,          // WHERE clause value substitution
-         * People.NAME + " ASC");   // Sort order.</pre>
-         * Example implementation:<p>
-         * <pre>// SQLiteQueryBuilder is a helper class that creates the
-         * // proper SQL syntax for us.
-         * SQLiteQueryBuilder qBuilder = new SQLiteQueryBuilder();
-         *
-         * // Set the table we're querying.
-         * qBuilder.setTables(DATABASE_TABLE_NAME);
-         *
-         * // If the query ends in a specific record number, we're
-         * // being asked for a specific record, so set the
-         * // WHERE clause in our query.
-         * if((URI_MATCHER.match(uri)) == SPECIFIC_MESSAGE){
-         * qBuilder.appendWhere("_id=" + uri.getPathLeafId());
-         * }
-         *
-         * // Make the query.
-         * Cursor c = qBuilder.query(mDb,
-         * projection,
-         * selection,
-         * selectionArgs,
-         * groupBy,
-         * having,
-         * sortOrder);
-         * c.setNotificationUri(getContext().getContentResolver(), uri);
-         * return c;</pre>
-         *
-         * @param uri           The URI to query. This will be the full URI sent by the client;
-         *                      if the client is requesting a specific record, the URI will end in a record number
-         *                      that the implementation should parse and add to a WHERE or HAVING clause, specifying
-         *                      that _id value.
-         * @param projection    The list of columns to put into the cursor. If
-         *                      {@code null} all columns are included.
-         * @param selection     A selection criteria to apply when filtering rows.
-         *                      If {@code null} then all rows are included.
-         * @param selectionArgs You may include ?s in selection, which will be replaced by
-         *                      the values from selectionArgs, in order that they appear in the selection.
-         *                      The values will be bound as Strings.
-         * @param sortOrder     How the rows in the cursor should be sorted.
-         *                      If {@code null} then the provider is free to define the sort order.
-         * @return a Cursor or {@code null}.
-         */
-    @Nullable
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Cursor returnCursor = null;
-
-        switch (sUriMatcher.match(uri)) {
-
-            case RECIPES: {
-                returnCursor = mOpenHelper.getReadableDatabase().query(
-                        RecipesContract.RecipeEntry.TABLE_NAME,
-                        RecipesContract.RecipeEntry.COLUMNS_RECIPES,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        RecipesContract.RecipeEntry.TABLE_NAME+"."+RecipesContract.RecipeEntry._ID+" DESC"
-                );
-
-            }
-            break;
-            case INGREDIENTS: {
-                returnCursor = mOpenHelper.getReadableDatabase().query(
-                        RecipesContract.IngredientEntry.TABLE_NAME,
-                        RecipesContract.IngredientEntry.COLUMNS_INGREDIENTS,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        RecipesContract.RecipeEntry.TABLE_NAME+"."+RecipesContract.RecipeEntry._ID
-                );
-
-            }
-            break;
-            case RECIPE_STEPS: {
-                returnCursor = mOpenHelper.getReadableDatabase().query(
-                        RecipesContract.RecipeStepEntry.TABLE_NAME,
-                        RecipesContract.RecipeStepEntry.COLUMNS_STEPS,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        RecipesContract.RecipeStepEntry.TABLE_NAME+"."+RecipesContract.RecipeStepEntry._ID
-                );
-
-            }
-            break;
-
-        }
-
-        return returnCursor;
-    }
 
     /**
      * Implement this to handle requests for the MIME type of the data at the
@@ -242,6 +137,114 @@ public class RecipesContentProvider extends ContentProvider {
         }
     }
 
+
+    /**
+     * Implement this to handle query requests from clients.
+     * This method can be called from multiple threads, as described in
+     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
+     * and Threads</a>.
+     * <p>
+     * Example client call:<p>
+     * <pre>// Request a specific record.
+     * Cursor managedCursor = managedQuery(
+     * ContentUris.withAppendedId(Contacts.People.CONTENT_URI, 2),
+     * projection,    // Which columns to return.
+     * null,          // WHERE clause.
+     * null,          // WHERE clause value substitution
+     * People.NAME + " ASC");   // Sort order.</pre>
+     * Example implementation:<p>
+     * <pre>// SQLiteQueryBuilder is a helper class that creates the
+     * // proper SQL syntax for us.
+     * SQLiteQueryBuilder qBuilder = new SQLiteQueryBuilder();
+     *
+     * // Set the table we're querying.
+     * qBuilder.setTables(DATABASE_TABLE_NAME);
+     *
+     * // If the query ends in a specific record number, we're
+     * // being asked for a specific record, so set the
+     * // WHERE clause in our query.
+     * if((URI_MATCHER.match(uri)) == SPECIFIC_MESSAGE){
+     * qBuilder.appendWhere("_id=" + uri.getPathLeafId());
+     * }
+     *
+     * // Make the query.
+     * Cursor c = qBuilder.query(mDb,
+     * projection,
+     * selection,
+     * selectionArgs,
+     * groupBy,
+     * having,
+     * sortOrder);
+     * c.setNotificationUri(getContext().getContentResolver(), uri);
+     * return c;</pre>
+     *
+     * @param uri           The URI to query. This will be the full URI sent by the client;
+     *                      if the client is requesting a specific record, the URI will end in a record number
+     *                      that the implementation should parse and add to a WHERE or HAVING clause, specifying
+     *                      that _id value.
+     * @param projection    The list of columns to put into the cursor. If
+     *                      {@code null} all columns are included.
+     * @param selection     A selection criteria to apply when filtering rows.
+     *                      If {@code null} then all rows are included.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by
+     *                      the values from selectionArgs, in order that they appear in the selection.
+     *                      The values will be bound as Strings.
+     * @param sortOrder     How the rows in the cursor should be sorted.
+     *                      If {@code null} then the provider is free to define the sort order.
+     * @return a Cursor or {@code null}.
+     */
+    @Nullable
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor returnCursor = null;
+
+        switch (sUriMatcher.match(uri)) {
+
+            case RECIPES: {
+                returnCursor = mOpenHelper.getReadableDatabase().query(
+                        RecipesContract.RecipeEntry.TABLE_NAME,
+                        RecipesContract.RecipeEntry.COLUMNS_RECIPES,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipesContract.RecipeEntry._ID + " DESC"
+                );
+
+            }
+            break;
+            case INGREDIENTS: {
+                returnCursor = mOpenHelper.getReadableDatabase().query(
+                        RecipesContract.IngredientEntry.TABLE_NAME,
+                        RecipesContract.IngredientEntry.COLUMNS_INGREDIENTS,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipesContract.RecipeEntry._ID
+                );
+
+            }
+            break;
+            case RECIPE_STEPS: {
+                returnCursor = mOpenHelper.getReadableDatabase().query(
+                        RecipesContract.RecipeStepEntry.TABLE_NAME,
+                        RecipesContract.RecipeStepEntry.COLUMNS_STEPS,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipesContract.RecipeStepEntry._ID
+                );
+
+            }
+            break;
+
+        }
+
+        return returnCursor;
+    }
+
     /**
      * Implement this to handle requests to insert a new row.
      * As a courtesy, call {@link android.content.ContentResolver#notifyChange(Uri, ContentObserver) notifyChange()}
@@ -275,9 +278,8 @@ public class RecipesContentProvider extends ContentProvider {
 
                 if (_id > 0)
                     returnUri = RecipesContract.RecipeEntry.buildRecipeUri(values.getAsLong(RecipesContract.RecipeEntry._ID));
-                break;
             }
-
+            break;
             case INGREDIENTS: {
                 long _id = 0;
 
@@ -342,24 +344,24 @@ public class RecipesContentProvider extends ContentProvider {
         switch (match) {
             case RECIPES:
                 deleteId = uri.getLastPathSegment();
-                selectionArgs =  new String[]{deleteId};
+                selectionArgs = new String[]{deleteId};
                 rowsDeleted = db.delete(
-                        RecipesContract.RecipeEntry.TABLE_NAME, RecipesContract.RecipeEntry._ID+"=?", selectionArgs);
+                        RecipesContract.RecipeEntry.TABLE_NAME, RecipesContract.RecipeEntry._ID + "=?", selectionArgs);
                 break;
             case INGREDIENTS:
                 deleteId = uri.getLastPathSegment();
-                selectionArgs =  new String[]{deleteId};
+                selectionArgs = new String[]{deleteId};
                 rowsDeleted = db.delete(
-                        RecipesContract.IngredientEntry.TABLE_NAME, RecipesContract.IngredientEntry._ID+"=?", selectionArgs);
+                        RecipesContract.IngredientEntry.TABLE_NAME, RecipesContract.IngredientEntry._ID + "=?", selectionArgs);
                 break;
             case RECIPE_STEPS:
                 deleteId = uri.getLastPathSegment();
-                selectionArgs =  new String[]{deleteId};
+                selectionArgs = new String[]{deleteId};
                 rowsDeleted = db.delete(
-                        RecipesContract.RecipeStepEntry.TABLE_NAME, RecipesContract.RecipeStepEntry._ID+"=?", selectionArgs);
+                        RecipesContract.RecipeStepEntry.TABLE_NAME, RecipesContract.RecipeStepEntry._ID + "=?", selectionArgs);
                 break;
             default:
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         //Because a null deletes all rows
@@ -394,10 +396,10 @@ public class RecipesContentProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsUpdated = 0;
 
-        switch (match){
+        switch (match) {
             case RECIPES:
-                if(selectionArgs == null) {
-                    selectionArgs = new String[]{RecipesContract.RecipeEntry.getRecipeIdFromUri(uri)+""};
+                if (selectionArgs == null) {
+                    selectionArgs = new String[]{RecipesContract.RecipeEntry.getRecipeIdFromUri(uri) + ""};
                 }
                 rowsUpdated = db.update(
                         RecipesContract.RecipeEntry.TABLE_NAME,
@@ -406,7 +408,7 @@ public class RecipesContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case INGREDIENTS:
-                if(selectionArgs == null) {
+                if (selectionArgs == null) {
                     selectionArgs = new String[]{uri.getLastPathSegment()};
                 }
                 rowsUpdated = db.update(
@@ -416,7 +418,7 @@ public class RecipesContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case RECIPE_STEPS:
-                if(selectionArgs == null) {
+                if (selectionArgs == null) {
                     selectionArgs = new String[]{uri.getLastPathSegment()};
                 }
                 rowsUpdated = db.update(
@@ -462,6 +464,8 @@ public class RecipesContentProvider extends ContentProvider {
                     }
 
                     db.setTransactionSuccessful();
+                } catch (SQLiteException ex) {
+                    ex.printStackTrace();
                 } finally {
                     db.endTransaction();
                 }
@@ -483,6 +487,9 @@ public class RecipesContentProvider extends ContentProvider {
                     }
 
                     db.setTransactionSuccessful();
+
+                } catch (SQLiteException ex) {
+                    ex.printStackTrace();
                 } finally {
                     db.endTransaction();
                 }
@@ -504,6 +511,8 @@ public class RecipesContentProvider extends ContentProvider {
                     }
 
                     db.setTransactionSuccessful();
+                } catch (SQLiteException ex) {
+                    ex.printStackTrace();
                 } finally {
                     db.endTransaction();
                 }
@@ -512,7 +521,7 @@ public class RecipesContentProvider extends ContentProvider {
                 return super.bulkInsert(uri, values);
         }
 
-        if(returnCount>0) {
+        if (returnCount > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return returnCount;
