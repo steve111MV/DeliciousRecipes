@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/ingredient_item_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="@dimen/ingredient_item_tv_with"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/ingredient_item_tv_size"
+            android:textStyle="bold"
+            android:text=" Quantity " />
+
+        <TextView
+            android:id="@+id/quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/ingredient_item_tv_size"
+            android:layout_marginLeft="@dimen/ingredient_item_left_margin"
+            android:text="1.5" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ingredient_item_fiel_top_margin">
+
+        <TextView
+            android:layout_width="@dimen/ingredient_item_tv_with"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ingredient_item_left_margin"
+            android:textStyle="bold"
+
+            android:textSize="@dimen/ingredient_item_tv_size"
+            android:text="Measure " />
+
+        <TextView
+            android:id="@+id/measure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/ingredient_item_tv_size"
+            android:text="KG" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ingredient_item_fiel_top_margin">
+
+        <TextView
+            android:layout_width="@dimen/ingredient_item_tv_with"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ingredient_item_left_margin"
+            android:textStyle="bold"
+
+            android:textSize="@dimen/ingredient_item_tv_size"
+            android:text="Ingredient " />
+
+        <TextView
+            android:id="@+id/ingredient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/ingredient_item_tv_size"
+            android:text="Farine of lito" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@color/ingredient_item_decor_view_color"
+        android:layout_marginTop="@dimen/ingredient_item_decor_view_top_margin" />
+</LinearLayout>

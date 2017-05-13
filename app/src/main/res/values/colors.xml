@@ -6,4 +6,5 @@
 
     <color name="recipe_step_tv_color">#7a7a7a</color>
     <color name="app_main_color">#fefefe</color>
+    <color name="ingredient_item_decor_view_color">#90777777</color>
 </resources>
