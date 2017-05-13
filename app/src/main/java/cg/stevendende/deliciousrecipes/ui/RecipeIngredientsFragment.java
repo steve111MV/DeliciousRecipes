@@ -3,7 +3,6 @@ package cg.stevendende.deliciousrecipes.ui;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,45 +17,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
+import cg.stevendende.deliciousrecipes.ui.adapters.IngredientsCursorAdapter;
 import cg.stevendende.deliciousrecipes.ui.adapters.StepsCursorRecyclerAdapter;
+
+import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_RECIPE_ID;
+import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_RECIPE_NAME;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RecipeDetailsFragment.StepsCallbackInterface} interface
- * to handle interaction events.
- * Use the {@link RecipeDetailsFragment#newInstance} factory method to
+ * Activities that contain this fragment must
+ * Use the {@link RecipeIngredientsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    // parameters initialization
-    public static final String EXTRA_RECIPE_ID = "param1";
-    public static final String EXTRA_RECIPE_NAME = "param2";
-    public static final int LOADER_ID = 2;
+public class RecipeIngredientsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final int LOADER_ID = 3;
 
     private String mRecipeID;
     private String mRecipeName;
 
-    private StepsCallbackInterface mListener;
-
-    GridLayoutManager mGridLayoutManager;
-    StepsCursorRecyclerAdapter mCursorAdapter;
+    LinearLayoutManager mLayoutManager;
+    IngredientsCursorAdapter mCursorAdapter;
 
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.stepsRecyclerView)
+    @BindView(R.id.ingredientsRecyclerView)
     RecyclerView mRecyclerView;
 
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.ingredientCard)
-    CardView mIngredientCard;
-
-
-    public RecipeDetailsFragment() {
+    public RecipeIngredientsFragment() {
     }
 
     /**
@@ -67,8 +59,8 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
      * @param recipeName Parameter 2.
      * @return A new instance of fragment RecipeDetailsFragment.
      */
-    public static RecipeDetailsFragment newInstance(String recipeId, String recipeName) {
-        RecipeDetailsFragment fragment = new RecipeDetailsFragment();
+    public static RecipeIngredientsFragment newInstance(String recipeId, String recipeName) {
+        RecipeIngredientsFragment fragment = new RecipeIngredientsFragment();
         Bundle args = new Bundle();
         args.putString(EXTRA_RECIPE_ID, recipeId);
         args.putString(EXTRA_RECIPE_NAME, recipeName);
@@ -89,7 +81,7 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootview = inflater.inflate(R.layout.fragment_recipe_details, container, false);
+        View rootview = inflater.inflate(R.layout.fragment_ingredients, container, false);
         ButterKnife.bind(this, rootview);
 
         if (savedInstanceState != null) {
@@ -100,42 +92,16 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
             }
         }
 
-        final int SPAN_COUNT = 1;
-        mGridLayoutManager = new GridLayoutManager(
-                getActivity(),
-                SPAN_COUNT,
+
+        mLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL,
                 false);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mCursorAdapter = new StepsCursorRecyclerAdapter();
+        mCursorAdapter = new IngredientsCursorAdapter(null);
         mRecyclerView.setAdapter(mCursorAdapter);
 
-        mIngredientCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onIngredientsClickListener(mRecipeID);
-            }
-        });
-
         return rootview;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof StepsCallbackInterface) {
-            mListener = (StepsCallbackInterface) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     /**
@@ -149,18 +115,18 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //build the query
 
-        String selection = RecipesContract.RecipeStepEntry.TABLE_NAME
-                + "." + RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " = ?";
+        String selection = RecipesContract.IngredientEntry.TABLE_NAME
+                + "." + RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + " = ?";
         String[] selectionArgs = new String[]{mRecipeID};
 
         return new android.support.v4.content.CursorLoader(
                 getActivity(),
-                RecipesContract.RecipeStepEntry.CONTENT_URI,
-                RecipesContract.RecipeStepEntry.COLUMNS_STEPS,
+                RecipesContract.IngredientEntry.CONTENT_URI,
+                RecipesContract.IngredientEntry.COLUMNS_INGREDIENTS,
                 selection,
                 selectionArgs,
-                RecipesContract.RecipeStepEntry.TABLE_NAME
-                        + "." + RecipesContract.RecipeStepEntry._ID);
+                RecipesContract.IngredientEntry.TABLE_NAME
+                        + "." + RecipesContract.IngredientEntry._ID);
 
     }
 
@@ -227,22 +193,6 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
         super.onActivityCreated(savedInstanceState);
 
         getLoaderManager().initLoader(LOADER_ID, null, this);
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface StepsCallbackInterface {
-        void onStepClickListener(String stepID);
-
-        void onIngredientsClickListener(String recipeID);
     }
 
     @Override

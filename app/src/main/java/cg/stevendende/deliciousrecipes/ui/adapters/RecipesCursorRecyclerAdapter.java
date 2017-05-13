@@ -40,7 +40,7 @@ public class RecipesCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recy
         MyViewHolder myHolder = (MyViewHolder) holder;
 
         myHolder.recipeId = cursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "";
-        myHolder.recipeName = cursor.getString(RecipesContract.RecipeEntry.INDEX_IMAGE);
+        myHolder.recipeName = cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME);
         //if there's a Thumbnail
         if (myHolder.hasThumbnail) {
             myHolder.imageContainer.setVisibility(View.VISIBLE);

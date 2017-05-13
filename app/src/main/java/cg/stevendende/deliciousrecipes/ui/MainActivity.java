@@ -20,7 +20,14 @@ public class MainActivity extends AppCompatActivity
         implements RecipesFragment.RecipesFragmentCallbackInterface,
         RecipeDetailsFragment.StepsCallbackInterface {
 
+    private static final String TAG_MAIN_FRAGMENT = "main";
+    private static final String TAG_DETAILS_FRAGMENT = "steps";
+    private static final String TAG_INGREDIENTS_FRAGMENT = "ingredients";
+
     private static final long SWIPE_REFRESHING_TIMEOUT = 12000;
+    private String mSelectedRecipeName;
+    private String mCurrentFragment = TAG_MAIN_FRAGMENT;
+
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -28,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefresh;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +76,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRecipeItemClick(String id, String name) {
+    public void onRecipeItemClick(String id, String recipeName) {
         /**
          * - Transition to Details fragment while in onePane
          * - Show details in second fragments when in twoPanes
@@ -78,8 +86,14 @@ public class MainActivity extends AppCompatActivity
                     .beginTransaction()
                     .addToBackStack(null)
                     .replace(R.id.fragment_container,
-                            RecipeDetailsFragment.newInstance(id, name))
+                            RecipeDetailsFragment.newInstance(id, recipeName))
                     .commit();
+
+            mSelectedRecipeName = recipeName;
+            mCurrentFragment = TAG_DETAILS_FRAGMENT;
+
+            //set Recipe name as Title in Toolbar
+            toolbar.setTitle(recipeName);
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
@@ -88,7 +102,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         // here
-        //
         //
         super.onSaveInstanceState(outState, outPersistentState);
     }
@@ -103,5 +116,40 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStepClickListener(String stepID) {
         //TODO handle step clicks
+    }
+
+    @Override
+    public void onIngredientsClickListener(String recipeID) {
+        //TODO handle ingredients click
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.fragment_container, RecipeIngredientsFragment.newInstance(recipeID, mSelectedRecipeName))
+                .commit();
+
+        mCurrentFragment = TAG_INGREDIENTS_FRAGMENT;
+
+        setTitle(mSelectedRecipeName
+                + " - " +
+                getString(R.string.ingredients));
+    }
+
+    private void resetAppTitle() {
+        setTitle(R.string.app_name);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
+            mCurrentFragment = TAG_DETAILS_FRAGMENT;
+            setTitle(mSelectedRecipeName);
+        } else if (mCurrentFragment.equals(TAG_DETAILS_FRAGMENT)) {
+            resetAppTitle();
+            mCurrentFragment = TAG_MAIN_FRAGMENT;
+        } else if (mCurrentFragment.equals(TAG_MAIN_FRAGMENT)) {
+            //TODO hint a double-click to exit
+        }
+
+        super.onBackPressed();
     }
 }

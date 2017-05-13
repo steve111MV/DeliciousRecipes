@@ -87,6 +87,7 @@ public class RecipesContract {
 
         public static final String COLUMN_RECIPE_ID = "recipe_id";
 
+
         public static Uri buildIngedientUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
@@ -97,6 +98,10 @@ public class RecipesContract {
                 RecipesContract.IngredientEntry.TABLE_NAME+"."+ IngredientEntry.COLUMN_MEASURE,
                 RecipesContract.IngredientEntry.TABLE_NAME+"."+ IngredientEntry.COLUMN_INGREDIENT
         };
+
+        public static final int INDEX_QUANTITY = 1;
+        public static final int INDEX_MEASURE = 2;
+        public static final int INDEX_INGREDIENT = 3;
     }
 
     /* Inner class that defines the table contents of Recipe-Steps table */
