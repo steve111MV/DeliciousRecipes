@@ -16,6 +16,8 @@ import butterknife.ButterKnife;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.sync.RecipesSyncAdapter;
 
+import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_RECIPE_NAME;
+
 public class MainActivity extends AppCompatActivity
         implements RecipesFragment.RecipesFragmentCallbackInterface,
         RecipeDetailsFragment.StepsCallbackInterface {
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     private static final long SWIPE_REFRESHING_TIMEOUT = 12000;
     private String mSelectedRecipeName;
     private String mCurrentFragment = TAG_MAIN_FRAGMENT;
+    public static final String EXTRA_CURRENT_FRAGMENT = "fragment_tag";
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.toolbar)
@@ -35,7 +38,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefresh;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity
                     .beginTransaction()
                     .replace(R.id.fragment_container, new RecipesFragment())
                     .commit();
+        } else {
+            mSelectedRecipeName = savedInstanceState.getString(EXTRA_RECIPE_NAME);
         }
 
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -100,17 +104,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        // here
-        //
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(EXTRA_RECIPE_NAME, mSelectedRecipeName);
+        outState.putString(EXTRA_CURRENT_FRAGMENT, mCurrentFragment);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        //here
-        //
+
+        mSelectedRecipeName =
+                savedInstanceState.getString(EXTRA_RECIPE_NAME);
+        mCurrentFragment =
+                savedInstanceState.getString(EXTRA_CURRENT_FRAGMENT);
+
+        switchToolbarTitles();
+    }
+
+    private void switchToolbarTitles() {
+        if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
+            setTitle(mSelectedRecipeName + " - " + getString(R.string.ingredients));
+        } else if (mCurrentFragment.equals(TAG_DETAILS_FRAGMENT)) {
+            setTitle(mSelectedRecipeName);
+        } else if (mCurrentFragment.equals(TAG_MAIN_FRAGMENT)) {
+            resetAppTitle();
+        }
     }
 
     @Override

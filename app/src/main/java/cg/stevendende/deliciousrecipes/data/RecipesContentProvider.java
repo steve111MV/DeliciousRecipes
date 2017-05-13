@@ -221,7 +221,8 @@ public class RecipesContentProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipesContract.RecipeEntry._ID
+                        RecipesContract.IngredientEntry.TABLE_NAME
+                                + "." + RecipesContract.IngredientEntry._ID
                 );
 
             }
@@ -236,7 +237,6 @@ public class RecipesContentProvider extends ContentProvider {
                         null,
                         RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipesContract.RecipeStepEntry._ID
                 );
-
             }
             break;
 

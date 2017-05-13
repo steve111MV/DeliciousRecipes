@@ -36,7 +36,7 @@ import cg.stevendende.deliciousrecipes.ui.adapters.StepsCursorRecyclerAdapter;
 public class RecipeDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     // parameters initialization
     public static final String EXTRA_RECIPE_ID = "param1";
-    public static final String EXTRA_RECIPE_NAME = "param2";
+    public static final String EXTRA_RECIPE_NAME = "recipe_name";
     public static final int LOADER_ID = 2;
 
     private String mRecipeID;
