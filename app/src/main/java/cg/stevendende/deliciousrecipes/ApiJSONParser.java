@@ -1,11 +1,13 @@
 package cg.stevendende.deliciousrecipes;
 
 import android.content.ContentValues;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
@@ -20,25 +22,24 @@ public class ApiJSONParser {
         ContentValues[]
                 recipesValuesArray = null,
                 ingredientsValuesArray = null,
-                recipeStepsValuesArray = null;
+                stepsValuesArray = null;
 
 
         Vector<ContentValues> recipesValuesVector =
                 new Vector<ContentValues>(jsonArray.length());
 
-        Vector<ContentValues> ingredientsValuesVector =
-                new Vector<ContentValues>(jsonArray.length());
-
-        Vector<ContentValues> stepsValuesVector =
-                new Vector<ContentValues>(jsonArray.length());
+        ArrayList<ContentValues> ingredientsValuesList = new ArrayList<>();
+        ArrayList<ContentValues> stepsValuesList = new ArrayList<>();
 
         //Temporary objects
         ContentValues values = null;
+        String uniqueValue;
         JSONArray ingredientsJsonArray, stepsJsonAray;
 
         //looper
+        JSONObject recipeJsonObj;
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject recipeJsonObj = jsonArray.getJSONObject(i);
+            recipeJsonObj = jsonArray.getJSONObject(i);
             values = new ContentValues();
 
             //Parse the Recipe first -> then the recipe's ingredients & steps
@@ -57,14 +58,16 @@ public class ApiJSONParser {
             recipesValuesVector.add(values);
 
             // for each recipe, we parse & append its ingredients & steps
-            // respectively into ingredientsValuesVector & stepsValuesVector
+            // respectively into ingredientsValuesList & stepsValuesList
             ingredientsJsonArray = recipeJsonObj.getJSONArray(Constants.TAG_RECIPE_INGREDIENTS);
             stepsJsonAray = recipeJsonObj.getJSONArray(Constants.TAG_RECIPE_STEPS);
 
-            //parsing the ingredients
+            //*******************************************************
+            //parsing the ingredients ****************************
+            JSONObject ingredient;
             for (int j = 0; j < ingredientsJsonArray.length(); j++) {
 
-                JSONObject obj = ingredientsJsonArray.getJSONObject(i);
+                ingredient = ingredientsJsonArray.getJSONObject(j);
                 values = new ContentValues();
 
                 // this is the ID of the RECIPE,
@@ -73,51 +76,73 @@ public class ApiJSONParser {
                         RecipesContract.IngredientEntry.COLUMN_RECIPE_ID,
                         recipeJsonObj.getInt(Constants.TAG_RECIPE_ID));
 
+                // A Unique field -- protection against duplications
+                uniqueValue = recipeJsonObj.getInt(Constants.TAG_RECIPE_ID)
+                        + "_" + ingredient.getString(Constants.TAG_INGREDIENT_NAME);
+                values.put(
+                        RecipesContract.IngredientEntry.COLUMN_UNIQUE_FIELD,
+                        uniqueValue);
+
                 values.put(
                         RecipesContract.IngredientEntry.COLUMN_QUANTITY,
-                        obj.getDouble(Constants.TAG_INGREDIENT_QUANTITY));
+                        ingredient.getDouble(Constants.TAG_INGREDIENT_QUANTITY));
                 values.put(
-                        RecipesContract.IngredientEntry.COLUMN_QUANTITY,
-                        obj.getString(Constants.TAG_INGREDIENT_MEASURE));
+                        RecipesContract.IngredientEntry.COLUMN_MEASURE,
+                        ingredient.getString(Constants.TAG_INGREDIENT_MEASURE));
                 values.put(
-                        RecipesContract.IngredientEntry.COLUMN_QUANTITY,
-                        obj.getString(Constants.TAG_INGREDIENT_NAME));
+                        RecipesContract.IngredientEntry.COLUMN_INGREDIENT,
+                        ingredient.getString(Constants.TAG_INGREDIENT_NAME));
 
                 //this vector will contain the ingredients of all recipes
-                ingredientsValuesVector.add(values);
+                ingredientsValuesList.add(values);
             }
 
-            //parsing the recipes steps
-            for (int j = 0; j < stepsJsonAray.length(); j++) {
+            //******************************************************
+            //parsing the recipes steps ***************************
+            JSONObject step;
+            for (int k = 0; k < stepsJsonAray.length(); k++) {
 
-                JSONObject obj = stepsJsonAray.getJSONObject(i);
+                step = stepsJsonAray.getJSONObject(k);
                 values = new ContentValues();
 
                 // this is the ID of the RECIPE,
                 // the foreign key referencing RECIPES database table entry
                 values.put(
                         RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID,
-                        recipeJsonObj.getInt(Constants.TAG_RECIPE_ID));
+                        jsonArray.getJSONObject(i).getInt(Constants.TAG_RECIPE_ID));
 
                 //ID from API, usefull for positioning
                 values.put(
                         RecipesContract.RecipeStepEntry._ID,
-                        obj.getInt(Constants.TAG_STEP_ID));
+                        // +1 beacause the ID starts at 0, & the CursorAdapter
+                        // will throw an exception
+                        step.getInt(Constants.TAG_STEP_ID) + 1);
+
+                // A Unique field -- protection against duplications
+                uniqueValue = recipeJsonObj.getInt(Constants.TAG_RECIPE_ID)
+                        + "_" + step.getInt(Constants.TAG_STEP_ID);
+                values.put(
+                        RecipesContract.RecipeStepEntry.COLUMN_UNIQUE_FIELD,
+                        uniqueValue);
+
                 values.put(
                         RecipesContract.RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
-                        obj.getString(Constants.TAG_STEP_SHORT_DESCRIPTION));
+                        step.getString(Constants.TAG_STEP_SHORT_DESCRIPTION));
+
                 values.put(
                         RecipesContract.RecipeStepEntry.COLUMN_DESCRIPTION,
-                        obj.getString(Constants.TAG_STEP_DESCRIPTION));
+                        step.getString(Constants.TAG_STEP_DESCRIPTION));
+
                 values.put(
                         RecipesContract.RecipeStepEntry.COLUMN_VIDEO_URL,
-                        obj.getString(Constants.TAG_STEP_VIDEO_URL));
+                        step.getString(Constants.TAG_STEP_VIDEO_URL));
+
                 values.put(
                         RecipesContract.RecipeStepEntry.COLUMN_IMAGE_URL,
-                        obj.getString(Constants.TAG_STEP_IMAGE_URL));
+                        step.getString(Constants.TAG_STEP_IMAGE_URL));
 
                 //this vector will contain the steps of all recipes
-                stepsValuesVector.add(values);
+                stepsValuesList.add(values);
             }
         }
 
@@ -126,19 +151,19 @@ public class ApiJSONParser {
             recipesValuesArray = new ContentValues[recipesValuesVector.size()];
             recipesValuesVector.toArray(recipesValuesArray);
         }
-        if (ingredientsValuesVector.size() > 0) {
-            ingredientsValuesArray = new ContentValues[ingredientsValuesVector.size()];
-            ingredientsValuesVector.toArray(ingredientsValuesArray);
+        if (ingredientsValuesList.size() > 0) {
+            ingredientsValuesArray = ingredientsValuesList
+                    .toArray(new ContentValues[ingredientsValuesList.size()]);
         }
-        if (stepsValuesVector.size() > 0) {
-            recipeStepsValuesArray = new ContentValues[stepsValuesVector.size()];
-            stepsValuesVector.toArray(recipeStepsValuesArray);
+        if (stepsValuesList.size() > 0) {
+            stepsValuesArray = stepsValuesList
+                    .toArray(new ContentValues[stepsValuesList.size()]);
         }
 
         return new Object[]{
                 recipesValuesArray,
                 ingredientsValuesArray,
-                recipeStepsValuesArray
+                stepsValuesArray
         };
     }
 }
