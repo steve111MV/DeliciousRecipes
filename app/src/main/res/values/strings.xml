@@ -10,5 +10,6 @@
          and API versions -->
     <!-- this value takes "true" from API 21 -->
     <string name="fits_system_windows">false</string>
+    <string name="recipe_details_ingeredients">Ingredients</string>
 
 </resources>
