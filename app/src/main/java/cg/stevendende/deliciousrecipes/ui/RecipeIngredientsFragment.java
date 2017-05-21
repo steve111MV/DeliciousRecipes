@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,17 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
-import cg.stevendende.deliciousrecipes.ui.adapters.IngredientsCursorAdapter;
-import cg.stevendende.deliciousrecipes.ui.adapters.StepsCursorRecyclerAdapter;
+import cg.stevendende.deliciousrecipes.ui.adapters.IngredientsCursorRecyclerAdapter;
 
-import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_RECIPE_ID;
-import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_RECIPE_NAME;
+import static cg.stevendende.deliciousrecipes.ui.MainActivity.EXTRA_RECIPE_ID;
+import static cg.stevendende.deliciousrecipes.ui.MainActivity.EXTRA_STEP_ID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,11 +34,10 @@ import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_REC
 public class RecipeIngredientsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int LOADER_ID = 3;
 
-    private String mRecipeID;
-    private String mRecipeName;
+    private String mStepID;
 
     LinearLayoutManager mLayoutManager;
-    IngredientsCursorAdapter mCursorAdapter;
+    IngredientsCursorRecyclerAdapter mCursorAdapter;
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.ingredientsRecyclerView)
@@ -62,8 +57,7 @@ public class RecipeIngredientsFragment extends Fragment implements LoaderManager
     public static RecipeIngredientsFragment newInstance(String recipeId, String recipeName) {
         RecipeIngredientsFragment fragment = new RecipeIngredientsFragment();
         Bundle args = new Bundle();
-        args.putString(EXTRA_RECIPE_ID, recipeId);
-        args.putString(EXTRA_RECIPE_NAME, recipeName);
+        args.putString(EXTRA_STEP_ID, recipeId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,8 +66,7 @@ public class RecipeIngredientsFragment extends Fragment implements LoaderManager
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mRecipeID = getArguments().getString(EXTRA_RECIPE_ID);
-            mRecipeName = getArguments().getString(EXTRA_RECIPE_NAME);
+            mStepID = getArguments().getString(EXTRA_STEP_ID);
         }
     }
 
@@ -87,8 +80,7 @@ public class RecipeIngredientsFragment extends Fragment implements LoaderManager
         if (savedInstanceState != null) {
             String tmpRecipeID = savedInstanceState.getString(EXTRA_RECIPE_ID);
             if (tmpRecipeID != null) {
-                mRecipeID = tmpRecipeID;
-                mRecipeName = savedInstanceState.getString(EXTRA_RECIPE_NAME);
+                mStepID = tmpRecipeID;
             }
         }
 
@@ -98,7 +90,7 @@ public class RecipeIngredientsFragment extends Fragment implements LoaderManager
                 false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mCursorAdapter = new IngredientsCursorAdapter(null);
+        mCursorAdapter = new IngredientsCursorRecyclerAdapter(null);
         mRecyclerView.setAdapter(mCursorAdapter);
 
         return rootview;
@@ -117,7 +109,7 @@ public class RecipeIngredientsFragment extends Fragment implements LoaderManager
 
         String selection = RecipesContract.IngredientEntry.TABLE_NAME
                 + "." + RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + " = ?";
-        String[] selectionArgs = new String[]{mRecipeID};
+        String[] selectionArgs = new String[]{mStepID};
 
         return new android.support.v4.content.CursorLoader(
                 getActivity(),
@@ -198,8 +190,7 @@ public class RecipeIngredientsFragment extends Fragment implements LoaderManager
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
-        outState.putString(EXTRA_RECIPE_ID, mRecipeID);
-        outState.putString(EXTRA_RECIPE_NAME, mRecipeName);
+        outState.putString(EXTRA_RECIPE_ID, mStepID);
         super.onSaveInstanceState(outState);
     }
 }

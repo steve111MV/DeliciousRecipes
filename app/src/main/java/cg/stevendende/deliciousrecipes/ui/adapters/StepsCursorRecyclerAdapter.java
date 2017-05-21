@@ -63,6 +63,8 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(this);
         }
 
         /**
@@ -72,7 +74,8 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
          */
         @Override
         public void onClick(View v) {
-            if (mCallback != null) mCallback.onItemClick();
+            if (mCallback != null)
+                mCallback.onStepItemClick(stepID);
         }
     }
 
@@ -92,6 +95,6 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
     } */
 
     public interface RecipesAdapterInteractionInterface {
-        void onItemClick();
+        void onStepItemClick(String stepID);
     }
 }

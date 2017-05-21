@@ -6,6 +6,7 @@ package cg.stevendende.deliciousrecipes.data;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.ContentObserver;
@@ -230,7 +231,7 @@ public class RecipesContentProvider extends ContentProvider {
             case RECIPE_STEPS: {
                 returnCursor = mOpenHelper.getReadableDatabase().query(
                         RecipesContract.RecipeStepEntry.TABLE_NAME,
-                        RecipesContract.RecipeStepEntry.COLUMNS_STEPS,
+                        projection,
                         selection,
                         selectionArgs,
                         null,
@@ -522,7 +523,7 @@ public class RecipesContentProvider extends ContentProvider {
         }
 
         if (returnCount > 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            getContext().getContentResolver().notifyChange(uri, null, false);
         }
         return returnCount;
     }

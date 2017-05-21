@@ -29,7 +29,7 @@ import cg.stevendende.deliciousrecipes.ui.adapters.RecipesCursorRecyclerAdapter;
 public class RecipesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, RecipesCursorRecyclerAdapter.RecipesAdapterInteractionInterface {
 
-    public static final int LOADER_ID = 1;
+    public static final int LOADER_ID = 0;
 
     private RecipesFragmentCallbackInterface mListener;
 
@@ -74,7 +74,8 @@ public class RecipesFragment extends Fragment implements
 
         //build the query
         return new android.support.v4.content.CursorLoader(
-                getActivity(),
+                //use either getActivity() or getContext()
+                getActivity() != null ? getActivity() : getContext(),
                 RecipesContract.RecipeEntry.CONTENT_URI,
                 RecipesContract.RecipeEntry.COLUMNS_RECIPES,
                 null, null,
@@ -166,11 +167,11 @@ public class RecipesFragment extends Fragment implements
     }
 
     @Override
-    public void onItemClick(String itemId, String itemName) {
-        mListener.onRecipeItemClick(itemId, itemName);
+    public void onItemClick(String recipeID, String itemName) {
+        mListener.onRecipeItemClick(recipeID, itemName);
     }
 
     public interface RecipesFragmentCallbackInterface {
-        void onRecipeItemClick(String id, String name);
+        void onRecipeItemClick(String recipeID, String name);
     }
 }

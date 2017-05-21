@@ -33,9 +33,10 @@ import cg.stevendende.deliciousrecipes.ui.adapters.StepsCursorRecyclerAdapter;
  * Use the {@link RecipeDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RecipeDetailsFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        StepsCursorRecyclerAdapter.RecipesAdapterInteractionInterface {
     // parameters initialization
-    public static final String EXTRA_RECIPE_ID = "param1";
     public static final String EXTRA_RECIPE_NAME = "recipe_name";
     public static final int LOADER_ID = 2;
 
@@ -70,7 +71,7 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
     public static RecipeDetailsFragment newInstance(String recipeId, String recipeName) {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(EXTRA_RECIPE_ID, recipeId);
+        args.putString(MainActivity.EXTRA_RECIPE_ID, recipeId);
         args.putString(EXTRA_RECIPE_NAME, recipeName);
         fragment.setArguments(args);
         return fragment;
@@ -80,7 +81,7 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mRecipeID = getArguments().getString(EXTRA_RECIPE_ID);
+            mRecipeID = getArguments().getString(MainActivity.EXTRA_RECIPE_ID);
             mRecipeName = getArguments().getString(EXTRA_RECIPE_NAME);
         }
     }
@@ -93,7 +94,7 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
         ButterKnife.bind(this, rootview);
 
         if (savedInstanceState != null) {
-            String tmpRecipeID = savedInstanceState.getString(EXTRA_RECIPE_ID);
+            String tmpRecipeID = savedInstanceState.getString(MainActivity.EXTRA_RECIPE_ID);
             if (tmpRecipeID != null) {
                 mRecipeID = tmpRecipeID;
                 mRecipeName = savedInstanceState.getString(EXTRA_RECIPE_NAME);
@@ -118,6 +119,7 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
+        mCursorAdapter.setCallbackListener(this);
         return rootview;
     }
 
@@ -229,6 +231,11 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
+    @Override
+    public void onStepItemClick(String stepID) {
+        mListener.onStepClickListener(mRecipeID, stepID);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -240,15 +247,14 @@ public class RecipeDetailsFragment extends Fragment implements LoaderManager.Loa
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface StepsCallbackInterface {
-        void onStepClickListener(String stepID);
-
+        void onStepClickListener(String recipeID, String stepID);
         void onIngredientsClickListener(String recipeID);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
-        outState.putString(EXTRA_RECIPE_ID, mRecipeID);
+        outState.putString(MainActivity.EXTRA_RECIPE_ID, mRecipeID);
         outState.putString(EXTRA_RECIPE_NAME, mRecipeName);
         super.onSaveInstanceState(outState);
     }

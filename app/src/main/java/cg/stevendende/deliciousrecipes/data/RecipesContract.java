@@ -131,10 +131,23 @@ public class RecipesContract {
         public static final String[] COLUMNS_STEPS = new String[]{
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+RecipesContract.RecipeStepEntry._ID,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
-                RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_DESCRIPTION,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_VIDEO_URL,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_IMAGE_URL
         };
+
+        public static final String[] COLUMNS_STEP_DETAILS = new String[]{
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipesContract.RecipeStepEntry._ID,
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_VIDEO_URL,
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_IMAGE_URL,
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_DESCRIPTION
+        };
+
+        public static final int INDEX_ID = 0;
+        public static final int INDEX_SHORT_DESC = 1;
+        public static final int INDEX_VIDEO_URL = 2;
+        public static final int INDEX_THUMBNAIL_URL = 3;
+        public static final int INDEX_DESCRIPTION = 4;
     }
 
     }

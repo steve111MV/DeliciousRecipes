@@ -4,12 +4,13 @@
 
 package cg.stevendende.deliciousrecipes.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,11 +26,15 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_MAIN_FRAGMENT = "main";
     private static final String TAG_DETAILS_FRAGMENT = "steps";
     private static final String TAG_INGREDIENTS_FRAGMENT = "ingredients";
+    private static final String TAG_STEP_DETAILS = "step_details";
+
+    public static final String EXTRA_STEP_ID = "step_id";
+    public static final String EXTRA_RECIPE_ID = "recipe_id";
+    public static final String EXTRA_CURRENT_FRAGMENT = "fragment_tag";
 
     private static final long SWIPE_REFRESHING_TIMEOUT = 12000;
     private String mSelectedRecipeName;
     private String mCurrentFragment = TAG_MAIN_FRAGMENT;
-    public static final String EXTRA_CURRENT_FRAGMENT = "fragment_tag";
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.toolbar)
@@ -80,7 +85,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRecipeItemClick(String id, String recipeName) {
+    public void onRecipeItemClick(String recipeID, String recipeName) {
         /**
          * - Transition to Details fragment while in onePane
          * - Show details in second fragments when in twoPanes
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity
                     .beginTransaction()
                     .addToBackStack(null)
                     .replace(R.id.fragment_container,
-                            RecipeDetailsFragment.newInstance(id, recipeName))
+                            RecipeDetailsFragment.newInstance(recipeID, recipeName))
                     .commit();
 
             mSelectedRecipeName = recipeName;
@@ -98,6 +103,7 @@ public class MainActivity extends AppCompatActivity
 
             //set Recipe name as Title in Toolbar
             toolbar.setTitle(recipeName);
+            showBackButton();
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
@@ -123,6 +129,9 @@ public class MainActivity extends AppCompatActivity
         switchToolbarTitles();
     }
 
+    /**
+     *
+     */
     private void switchToolbarTitles() {
         if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
             setTitle(mSelectedRecipeName + " - " + getString(R.string.ingredients));
@@ -134,8 +143,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onStepClickListener(String stepID) {
+    public void onStepClickListener(String recipeID, String stepID) {
         //TODO handle step clicks
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.fragment_container,
+                        StepDetailsFragment
+                                .newInstance(recipeID, stepID))
+                .commit();
+
+        mCurrentFragment = TAG_STEP_DETAILS;
+
+        showBackButton();
+    }
+
+    private void showBackButton() throws NullPointerException {
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void hideBackButton() throws NullPointerException {
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -151,10 +186,21 @@ public class MainActivity extends AppCompatActivity
         setTitle(mSelectedRecipeName
                 + " - " +
                 getString(R.string.ingredients));
+
+        showBackButton();
     }
 
     private void resetAppTitle() {
         setTitle(R.string.app_name);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return (super.onOptionsItemSelected(menuItem));
     }
 
     @Override
@@ -164,8 +210,10 @@ public class MainActivity extends AppCompatActivity
             mCurrentFragment = TAG_DETAILS_FRAGMENT;
             setTitle(mSelectedRecipeName);
         } else if (mCurrentFragment.equals(TAG_DETAILS_FRAGMENT)) {
-            resetAppTitle();
+
             mCurrentFragment = TAG_MAIN_FRAGMENT;
+            resetAppTitle();
+            hideBackButton();
         } else if (mCurrentFragment.equals(TAG_MAIN_FRAGMENT)) {
             //TODO hint a double-click to exit
         }

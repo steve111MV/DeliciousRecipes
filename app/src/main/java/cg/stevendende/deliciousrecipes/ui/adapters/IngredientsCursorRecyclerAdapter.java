@@ -1,12 +1,10 @@
 package cg.stevendende.deliciousrecipes.ui.adapters;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -18,9 +16,9 @@ import cg.stevendende.deliciousrecipes.data.RecipesContract;
  * Created by STEVEN on 13/05/2017.
  */
 
-public class IngredientsCursorAdapter extends RecyclerViewCursorAdapter<IngredientsCursorAdapter.MyViewHolder> {
+public class IngredientsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<IngredientsCursorRecyclerAdapter.MyViewHolder> {
 
-    public IngredientsCursorAdapter(Cursor cursor) {
+    public IngredientsCursorRecyclerAdapter(Cursor cursor) {
         super(cursor);
     }
 
