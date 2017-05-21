@@ -24,4 +24,8 @@
     <dimen name="ingredient_item_left_margin">4dp</dimen>
     <dimen name="ingredient_item_tv_size">16sp</dimen>
     <dimen name="ingredient_item_tv_with">100dp</dimen>
+    <dimen name="expandable_layout_left_margin">5dp</dimen>
+    <dimen name="expandable_layout_padding">5dp</dimen>
+    <dimen name="expandable_layout_text_size">18sp</dimen>
+    <dimen name="recipe_details_step_header_tv_size">22sp</dimen>
 </resources>

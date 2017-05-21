@@ -7,6 +7,13 @@
     <string name="content_authority" translatable="false">cg.stevendende.deliciousrecipes</string>
     <string name="recipe_details_ingeredients">Ingredients ...</string>
 
+    <string name="notification_text">Press play to launch the App!</string>
+    <string name="sample_list_load_error">Error loading one or more samples!</string>
+    <string name="sample_not_found_error">Sample not found!</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="restart">Restart</string>
+
     <!-- Used in the ExpandableTextLayout from customviews package-->
     <string name="review_card_expand">expand</string>
     <string name="review_card_collapse">collapse</string>

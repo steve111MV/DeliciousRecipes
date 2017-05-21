@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#E91E63</color>
+    <color name="colorPrimaryDark">#C2185B</color>
+    <color name="colorPrimaryLight">#F8BBD0</color>
+    <color name="colorAccent">#FF9800</color>
+
+    <color name="colorPlayerBg">#5fe2dc</color>
+    <color name="colorRecipeStepBg">#efadce</color>
+
+    <color name="colorTeal">#009688</color>
+    <color name="colorTextPrimary">#414141</color>
 
     <color name="recipe_step_tv_color">#7a7a7a</color>
     <color name="app_main_color">#fefefe</color>
     <color name="ingredient_item_decor_view_color">#90777777</color>
+    <color name="colorWhiteSeundo">#f1f1f1</color>
+    <color name="recipe_step_action_view_bg">#90777777</color>
 </resources>
