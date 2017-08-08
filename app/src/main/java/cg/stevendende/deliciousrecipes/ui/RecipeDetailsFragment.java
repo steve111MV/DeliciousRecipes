@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.RelativeLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,9 +54,8 @@ public class RecipeDetailsFragment extends Fragment
     RecyclerView mRecyclerView;
 
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.ingredientCard)
-    CardView mIngredientCard;
-
+    @BindView(R.id.ingredientsRL)
+    RelativeLayout mIngredient;
 
     public RecipeDetailsFragment() {
     }
@@ -112,7 +112,7 @@ public class RecipeDetailsFragment extends Fragment
         mCursorAdapter = new StepsCursorRecyclerAdapter();
         mRecyclerView.setAdapter(mCursorAdapter);
 
-        mIngredientCard.setOnClickListener(new View.OnClickListener() {
+        mIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onIngredientsClickListener(mRecipeID);

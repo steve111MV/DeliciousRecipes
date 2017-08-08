@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.exoplayer2.ui.SimpleExoPlayerView android:id="@+id/exoPlayer"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/step_video_height"
+    android:adjustViewBounds="true"
+    android:background="@color/colorPlayerBg"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

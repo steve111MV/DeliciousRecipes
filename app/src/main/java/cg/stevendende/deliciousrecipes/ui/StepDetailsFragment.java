@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -38,6 +40,7 @@ import com.google.android.exoplayer2.util.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cg.stevendende.deliciousrecipes.BakingAppUtils;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.StepParsingAsyncTask;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
@@ -63,15 +66,6 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @BindView(R.id.exoPlayer)
     SimpleExoPlayerView mPlayerView;
 
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.expandable_text)
-    ExpandableTextLayoutMain mDesciptionExpandableTV;
-
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.shortDescription)
-    TextView mShortDescTV;
-
-
     private SimpleExoPlayer mExoPlayer;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
@@ -96,6 +90,10 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         return fragment;
     }
 
+    public interface StepDetailsFragmentInterface {
+        void onRecipeItemClick(String id, String name);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,12 +106,82 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.fragment_step_details, container, false);
+        View rootview = inflater.inflate(R.layout.fragment_step_video, container, false);
         ButterKnife.bind(this, rootview);
 
         //get data from DataBase and display
-        loadData(mRecipeID, mStepID);
+        Cursor cursor = loadStepData(mRecipeID, mStepID, getActivity());
+
+        /** parse the cursor to get a {@link RecipeStep } Object */
+        new StepParsingAsyncTask() {
+            @Override
+            protected void onPostExecute(RecipeStep recipeStep) {
+                mRecipeStep = recipeStep;
+                populateViews(recipeStep);
+            }
+        }.execute(cursor);
+
+        LinearLayout.LayoutParams layoutParams
+                = new LinearLayout.LayoutParams(mPlayerView.getLayoutParams());
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            mPlayerView.setLayoutParams(layoutParams);
+
+            Log.e("configchange", "landscape");
+        } else {
+            layoutParams.height = BakingAppUtils.dpToPx(getActivity(), 256);
+            mPlayerView.setLayoutParams(layoutParams);
+            Log.e("configchange", "portrait");
+        }
+
         return rootview;
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof StepDetailsFragmentInterface) {
+            mListener = (StepDetailsFragmentInterface) context;
+        } else {
+            /*throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        */
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
+    private void populateViews(RecipeStep recipeStep) {
+        // here the mRecipeStep object has an instance
+
+        if (mRecipeStep == null) {
+            Log.i("recipeStep", "null");
+            return;
+        }
+        Log.i("recipeStep", "not null");
+
+        try {
+            if (mRecipeStep.getVideoUrl() != null) {
+                loadVideo(mRecipeStep.getVideoUrl());
+            } else if (mRecipeStep.getThumbnailUrl() != null) {
+                loadVideo(mRecipeStep.getThumbnailUrl());
+            }
+        } catch (OutOfMemoryError ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -141,59 +209,15 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof StepDetailsFragmentInterface) {
-            mListener = (StepDetailsFragmentInterface) context;
-        } else {
-            /*throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        */
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-
-    public interface StepDetailsFragmentInterface {
-        void onRecipeItemClick(String id, String name);
-    }
-
-    private void populateViews() {
-        // here the mRecipeStep object has an instance
-
-        if (mRecipeStep == null) {
-            Log.i("recipeStep", "null");
-            return;
-        }
-        Log.i("recipeStep", "not null");
-
-        mShortDescTV.setText(mRecipeStep.getShortDesc());
-        mDesciptionExpandableTV.setText(mRecipeStep.getDesc());
-
-        try {
-            if (mRecipeStep.getVideoUrl() != null) {
-                loadVideo(mRecipeStep.getVideoUrl());
-            } else if (mRecipeStep.getThumbnailUrl() != null) {
-                loadVideo(mRecipeStep.getThumbnailUrl());
-            }
-        } catch (OutOfMemoryError ex) {
-            ex.printStackTrace();
-        }
-    }
-
     private void loadVideo(String videoUrl) throws OutOfMemoryError {
         // Initialize the Media Session.
         initializeMediaSession();
 
         // Initialize the player.
         //initializePlayer(Uri.parse(videoUrl));
-        initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
+
+        //initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
+        initializePlayer(Uri.parse("http://192.168.8.101/udacity/test.mp4"));
     }
 
     /**
@@ -232,7 +256,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     }
 
-    private void loadData(String recipeID, String stepID) {
+    public static Cursor loadStepData(String recipeID, String stepID, Context context) {
 
         //build query with parameters
         String selection = RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " = ? AND "
@@ -241,20 +265,12 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         String[] selectionArgs = new String[]{recipeID, stepID};
 
         //build the query
-        Cursor cursor = getActivity().getContentResolver()
+        return context.getContentResolver()
                 .query(RecipesContract.RecipeStepEntry.CONTENT_URI,
                         RecipesContract.RecipeStepEntry.COLUMNS_STEP_DETAILS,
                         selection,
                         selectionArgs, null);
 
-        /** parse the cursor to get a {@link RecipeStep } Object */
-        new StepParsingAsyncTask() {
-            @Override
-            protected void onPostExecute(RecipeStep recipeStep) {
-                mRecipeStep = recipeStep;
-                populateViews();
-            }
-        }.execute(cursor);
     }
 
     //**************START EXO PLAYER CALLBACKS*****************************************//

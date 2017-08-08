@@ -5,15 +5,19 @@
 package cg.stevendende.deliciousrecipes.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cg.stevendende.deliciousrecipes.BakingAppUtils;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.sync.RecipesSyncAdapter;
 
@@ -24,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         RecipeDetailsFragment.StepsCallbackInterface {
 
     private static final String TAG_MAIN_FRAGMENT = "main";
-    private static final String TAG_DETAILS_FRAGMENT = "steps";
+    private static final String TAG_RECIPE_DETAILS_FRAGMENT = "steps";
     private static final String TAG_INGREDIENTS_FRAGMENT = "ingredients";
     private static final String TAG_STEP_DETAILS = "step_details";
 
@@ -35,6 +39,10 @@ public class MainActivity extends AppCompatActivity
     private static final long SWIPE_REFRESHING_TIMEOUT = 12000;
     private String mSelectedRecipeName;
     private String mCurrentFragment = TAG_MAIN_FRAGMENT;
+
+    private boolean mTwoPane = false;
+    private boolean readyToExit = false;
+    private int mFragmentContainerId;
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.toolbar)
@@ -52,15 +60,50 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         RecipesSyncAdapter.initializeSyncAdapter(this);
-
         setSupportActionBar(toolbar);
 
-        if (savedInstanceState == null) {
+        // Set activity to FullScreen when il Landscape and playing a recipe video
+        if (mCurrentFragment.equals(TAG_RECIPE_DETAILS_FRAGMENT)
+                && getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+
+            //only after activity has recreated
+            if (savedInstanceState != null) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            }
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        }
+
+        if (findViewById(R.id.recipe_detail_fragment_container) != null) {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+            mFragmentContainerId = R.id.recipe_detail_fragment_container;
+
+            // In two-pane mode, we show the detail view in this activity by
+            // replacing the detail fragment using a
+            // fragment transaction.
+            if (savedInstanceState == null) {
+                onRecipeItemClick("1", mSelectedRecipeName);
+            }
+        } else {
+            mTwoPane = false;
+            mFragmentContainerId = R.id.fragment_container;
+
+            //getSupportActionBar().setElevation(0f);
+        }
+
+        if (!mTwoPane && savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new RecipesFragment())
+                    .replace(mFragmentContainerId, new RecipesFragment())
                     .commit();
-        } else {
+        } else if (savedInstanceState != null) {
             mSelectedRecipeName = savedInstanceState.getString(EXTRA_RECIPE_NAME);
         }
 
@@ -91,19 +134,30 @@ public class MainActivity extends AppCompatActivity
          * - Show details in second fragments when in twoPanes
          **/
         try {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.fragment_container,
-                            RecipeDetailsFragment.newInstance(recipeID, recipeName))
-                    .commit();
+
+            if (mTwoPane) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(mFragmentContainerId,
+                                RecipeDetailsFragment.newInstance(recipeID, recipeName))
+                        .commit();
+
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .replace(mFragmentContainerId,
+                                RecipeDetailsFragment.newInstance(recipeID, recipeName))
+                        .commit();
+
+                //set Recipe name as Title in Toolbar
+                toolbar.setTitle(recipeName);
+                showBackButton();
+            }
 
             mSelectedRecipeName = recipeName;
-            mCurrentFragment = TAG_DETAILS_FRAGMENT;
+            mCurrentFragment = TAG_RECIPE_DETAILS_FRAGMENT;
 
-            //set Recipe name as Title in Toolbar
-            toolbar.setTitle(recipeName);
-            showBackButton();
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
@@ -135,7 +189,7 @@ public class MainActivity extends AppCompatActivity
     private void switchToolbarTitles() {
         if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
             setTitle(mSelectedRecipeName + " - " + getString(R.string.ingredients));
-        } else if (mCurrentFragment.equals(TAG_DETAILS_FRAGMENT)) {
+        } else if (mCurrentFragment.equals(TAG_RECIPE_DETAILS_FRAGMENT)) {
             setTitle(mSelectedRecipeName);
         } else if (mCurrentFragment.equals(TAG_MAIN_FRAGMENT)) {
             resetAppTitle();
@@ -144,15 +198,36 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStepClickListener(String recipeID, String stepID) {
-        //TODO handle step clicks
-        getSupportFragmentManager().beginTransaction()
+
+        Intent intent = new Intent(MainActivity.this, RecipeStepDetailsActivity.class);
+        intent.putExtra(EXTRA_RECIPE_ID, recipeID);
+        intent.putExtra(EXTRA_STEP_ID, stepID);
+
+        startActivity(intent);
+        /*getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.fragment_container,
+                .replace(mFragmentContainerId,
                         StepDetailsFragment
                                 .newInstance(recipeID, stepID))
+                .commit();*/
+
+        //mCurrentFragment = TAG_STEP_DETAILS;
+        //showBackButton();
+    }
+
+    @Override
+    public void onIngredientsClickListener(String recipeID) {
+        //TODO handle ingredients click
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(mFragmentContainerId, RecipeIngredientsFragment.newInstance(recipeID, mSelectedRecipeName))
                 .commit();
 
-        mCurrentFragment = TAG_STEP_DETAILS;
+        mCurrentFragment = TAG_INGREDIENTS_FRAGMENT;
+
+        setTitle(mSelectedRecipeName
+                + " - " +
+                getString(R.string.ingredients));
 
         showBackButton();
     }
@@ -173,22 +248,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onIngredientsClickListener(String recipeID) {
-        //TODO handle ingredients click
-        getSupportFragmentManager().beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_container, RecipeIngredientsFragment.newInstance(recipeID, mSelectedRecipeName))
-                .commit();
-
-        mCurrentFragment = TAG_INGREDIENTS_FRAGMENT;
-
-        setTitle(mSelectedRecipeName
-                + " - " +
-                getString(R.string.ingredients));
-
-        showBackButton();
-    }
 
     private void resetAppTitle() {
         setTitle(R.string.app_name);
@@ -204,18 +263,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public void onBackPressed() {
 
         if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
-            mCurrentFragment = TAG_DETAILS_FRAGMENT;
+            mCurrentFragment = TAG_RECIPE_DETAILS_FRAGMENT;
             setTitle(mSelectedRecipeName);
-        } else if (mCurrentFragment.equals(TAG_DETAILS_FRAGMENT)) {
+        } else if (mCurrentFragment.equals(TAG_STEP_DETAILS)) {
+            mCurrentFragment = TAG_RECIPE_DETAILS_FRAGMENT;
+            setTitle(mSelectedRecipeName);
+        } else if (mCurrentFragment.equals(TAG_RECIPE_DETAILS_FRAGMENT)) {
 
             mCurrentFragment = TAG_MAIN_FRAGMENT;
             resetAppTitle();
             hideBackButton();
         } else if (mCurrentFragment.equals(TAG_MAIN_FRAGMENT)) {
             //TODO hint a double-click to exit
+            hideBackButton();
         }
 
         super.onBackPressed();

@@ -23,5 +23,6 @@
     <!-- this value takes "true" from API 21 -->
     <string name="fits_system_windows">false</string>
     <string name="ingredients">ingredients</string>
+    <string name="title_activity_recipe_step_details"> </string>
 
 </resources>
