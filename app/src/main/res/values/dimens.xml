@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="toolbar_margin_top">24dp</dimen>
     <dimen name="toolbar_elevation">2dp</dimen>
+
     <dimen name="item_recipe_text_size">29sp</dimen>
     <dimen name="item_recipe_image_height">180dp</dimen>
     <dimen name="item_recipe_tv_name_padding_with_image">4dp</dimen>
@@ -13,21 +14,26 @@
     <dimen name="item_recipe_tv_name_padding_left">5dp</dimen>
     <dimen name="item_recipe_tv_name_padding_right">5dp</dimen>
     <dimen name="item_recipe_text_size_with_image">22sp</dimen>
+
     <dimen name="recipe_details_ingredients_tv_padding">10dp</dimen>
     <dimen name="recipe_details_steps_top_margin">1dp</dimen>
     <dimen name="recipe_details_step_tv_size">22sp</dimen>
     <dimen name="recipe_details_ingredient_tv_size">22sp</dimen>
     <dimen name="recipe_details_step_position_tv_size">16sp</dimen>
+    <dimen name="recipe_details_step_header_tv_size">22sp</dimen>
+
     <dimen name="ingredient_item_fiel_top_margin">2dp</dimen>
     <dimen name="ingredient_item_padding">5dp</dimen>
     <dimen name="ingredient_item_decor_view_top_margin">10dp</dimen>
     <dimen name="ingredient_item_left_margin">4dp</dimen>
     <dimen name="ingredient_item_tv_size">16sp</dimen>
     <dimen name="ingredient_item_tv_with">100dp</dimen>
+
     <dimen name="expandable_layout_left_margin">5dp</dimen>
     <dimen name="expandable_layout_padding">5dp</dimen>
     <dimen name="expandable_layout_text_size">18sp</dimen>
-    <dimen name="recipe_details_step_header_tv_size">22sp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="step_video_height">300dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 </resources>
