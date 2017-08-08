@@ -46,10 +46,16 @@ public class RecipesCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recy
         if (myHolder.hasThumbnail) {
             myHolder.imageContainer.setVisibility(View.VISIBLE);
             myHolder.tvNameWithImage.setText(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+
+            //content description for TalkBack (Android Acessibilities)
+            myHolder.tvNameWithImage.setContentDescription(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
         } else {
             myHolder.imageContainer.setVisibility(View.GONE);
             myHolder.tvName.setText(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+
+            myHolder.tvName.setContentDescription(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
         }
+
     }
 
     public void setCallbackListener(RecipesAdapterInteractionInterface callbackInterface) {

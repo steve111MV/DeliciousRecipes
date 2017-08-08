@@ -37,6 +37,9 @@ public class IngredientsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<
         holder.tvMeasure.setText(cursor.getString(RecipesContract.IngredientEntry.INDEX_MEASURE));
         holder.tvIngredient.setText(cursor.getString(RecipesContract.IngredientEntry.INDEX_INGREDIENT));
 
+        //content description for TalkBack (Android Acessibilities)
+        holder.tvIngredient.setContentDescription(cursor.getString(RecipesContract.IngredientEntry.INDEX_INGREDIENT));
+
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
