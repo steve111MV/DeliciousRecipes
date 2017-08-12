@@ -1,28 +1,23 @@
 <resources>
-    <string name="app_name">Delicious Recipes</string>
+    <string name="app_name">Recettes Délicieuses</string>
 
 
-    <!-- SyncAdapter related -->
-    <string name="sync_account_type" translatable="false">deliciousrecipes.stevendende.cg</string>
-    <string name="content_authority" translatable="false">cg.stevendende.deliciousrecipes</string>
     <string name="recipe_details_ingeredients">Ingredients ...</string>
 
     <string name="notification_text">Press play to launch the App!</string>
     <string name="sample_list_load_error">Error loading one or more samples!</string>
     <string name="sample_not_found_error">Sample not found!</string>
-    <string name="play">Play</string>
+    <string name="play">Demmarer</string>
     <string name="pause">Pause</string>
-    <string name="restart">Restart</string>
+    <string name="restart">Redemarrer</string>
 
     <!-- Used in the ExpandableTextLayout from customviews package-->
-    <string name="review_card_expand">expand</string>
-    <string name="review_card_collapse">collapse</string>
+    <string name="review_card_expand">plus</string>
+    <string name="review_card_collapse">cacher </string>
 
     <!-- dependency resources : values deferenciated by screen sizes
          and API versions -->
     <!-- this value takes "true" from API 21 -->
-    <string name="fits_system_windows">false</string>
     <string name="ingredients">ingredients</string>
-    <string name="title_activity_recipe_step_details" translatable="false"> </string>
-
+    <string name="widget_empty_text">Aucune rectte disponible, ouvre l\'application et tire vers le bas pour telecharger des recetes</string>
 </resources>
