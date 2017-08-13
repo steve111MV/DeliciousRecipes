@@ -19,5 +19,6 @@
          and API versions -->
     <!-- this value takes "true" from API 21 -->
     <string name="ingredients">ingredients</string>
+    <string name="title_collection_widget">BakingApp Recettes</string>
     <string name="widget_empty_text">Aucune rectte disponible, ouvre l\'application et tire vers le bas pour telecharger des recetes</string>
 </resources>

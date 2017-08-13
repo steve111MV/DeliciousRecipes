@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F8F8">
+    android:background="@android:color/white"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
- <!--StackView xmlns:android="http://schemas.android.com/apk/res/android"
-     android:id="@+id/stack_view"
+ <FrameLayout
      android:layout_width="match_parent"
-     android:layout_height="match_parent"
-     android:background="#55000000"
-     android:gravity="center"
-     android:loopViews="true" /-->
- <ListView
-     android:id="@+id/list_view"
+     android:layout_height="wrap_content">
+
+  <TextView
+      android:layout_width="match_parent"
+      android:id="@+id/widgetTitleLabel"
+      android:text="@string/title_collection_widget"
+      android:textColor="@android:color/white"
+      android:background="@color/colorPrimary"
+      android:textSize="18sp"
+      android:gravity="center"
+      android:textAllCaps="false"
+      android:layout_height="wrap_content"></TextView>
+ </FrameLayout>
+
+ <LinearLayout
      android:layout_width="match_parent"
-     android:layout_height="match_parent" />
+     android:layout_height="wrap_content">
 
- <TextView
-     android:id="@+id/empty_view"
-     android:layout_width="match_parent"
-     android:layout_height="match_parent"
-     android:gravity="center"
-     android:visibility="gone"
-     android:textColor="#ffffff"
+  <ListView
+      android:id="@+id/widgetListView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/transparent"
+      android:dividerHeight="1dp"
+      android:divider="#70eeeeee"
+      tools:listitem="@layout/widget_item"></ListView>
+ </LinearLayout>
 
-     android:textStyle="bold"
-     android:text="@string/widget_empty_text"
-     android:textSize="20sp" />
-
-</FrameLayout>
+</LinearLayout>

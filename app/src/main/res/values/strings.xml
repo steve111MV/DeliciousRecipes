@@ -24,5 +24,6 @@
     <string name="fits_system_windows">false</string>
     <string name="ingredients">ingredients</string>
     <string name="title_activity_recipe_step_details" translatable="false"> </string>
+    <string name="title_collection_widget">BakingApp Recipes</string>
 
 </resources>
