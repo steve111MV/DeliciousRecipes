@@ -243,6 +243,7 @@ public class RecipesContentProvider extends ContentProvider {
 
         }
 
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return returnCursor;
     }
 
@@ -277,8 +278,10 @@ public class RecipesContentProvider extends ContentProvider {
                     ex.printStackTrace();
                 }
 
-                if (_id > 0)
+                if (_id > 0) {
                     returnUri = RecipesContract.RecipeEntry.buildRecipeUri(values.getAsLong(RecipesContract.RecipeEntry._ID));
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
             }
             break;
             case INGREDIENTS: {
@@ -290,8 +293,10 @@ public class RecipesContentProvider extends ContentProvider {
                     ex.printStackTrace();
                 }
 
-                if (_id > 0)
+                if (_id > 0) {
                     returnUri = RecipesContract.IngredientEntry.buildIngedientUri(values.getAsLong(RecipesContract.IngredientEntry._ID));
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
                 break;
             }
 
@@ -304,8 +309,10 @@ public class RecipesContentProvider extends ContentProvider {
                     ex.printStackTrace();
                 }
 
-                if (_id > 0)
+                if (_id > 0) {
                     returnUri = RecipesContract.RecipeStepEntry.buildStepUri(values.getAsLong(RecipesContract.RecipeStepEntry._ID));
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
                 break;
             }
         }
@@ -407,6 +414,10 @@ public class RecipesContentProvider extends ContentProvider {
                         values,
                         RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipesContract.RecipeEntry._ID + "=?",
                         selectionArgs);
+
+                if (rowsUpdated > 0) {
+
+                }
                 break;
             case INGREDIENTS:
                 if (selectionArgs == null) {
@@ -442,7 +453,7 @@ public class RecipesContentProvider extends ContentProvider {
 
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public synchronized int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int returnCount = 0;
@@ -458,6 +469,7 @@ public class RecipesContentProvider extends ContentProvider {
                             long _id = db.insertOrThrow(RecipesContract.RecipeEntry.TABLE_NAME, null, value);
                             if (_id != -1) {
                                 returnCount++;
+                                Log.e("BALog_BINSERT", returnCount + "");
                             }
                         } catch (SQLiteConstraintException ex) {
                             ex.printStackTrace();
@@ -469,6 +481,10 @@ public class RecipesContentProvider extends ContentProvider {
                     ex.printStackTrace();
                 } finally {
                     db.endTransaction();
+                }
+
+                if (returnCount > 0) {
+                    getContext().getContentResolver().notifyChange(uri.normalizeScheme(), null);
                 }
                 break;
             case INGREDIENTS:
@@ -523,7 +539,13 @@ public class RecipesContentProvider extends ContentProvider {
         }
 
         if (returnCount > 0) {
-            getContext().getContentResolver().notifyChange(uri, null, false);
+            Log.e("BALog_contentRes", "restCount=" + returnCount + "");
+
+            try {
+                getContext().getContentResolver().notifyChange(uri.normalizeScheme(), null);
+            } catch (Exception ex) {
+                Log.e("BALog_contentRes", " getContentResolver failed");
+            }
         }
         return returnCount;
     }
