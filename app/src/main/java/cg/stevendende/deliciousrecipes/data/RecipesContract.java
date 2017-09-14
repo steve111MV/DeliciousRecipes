@@ -33,7 +33,7 @@ public class RecipesContract {
     public static final class RecipeEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPES).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPES).build().normalizeScheme();
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_RECIPES;
@@ -46,7 +46,7 @@ public class RecipesContract {
         public static final String COLUMN_IMAGE = "image";
 
         public static Uri buildRecipeUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return ContentUris.withAppendedId(CONTENT_URI, id).normalizeScheme();
         }
 
         public static long getRecipeIdFromUri(Uri uri) {
