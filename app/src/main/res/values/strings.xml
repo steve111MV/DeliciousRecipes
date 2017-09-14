@@ -25,5 +25,8 @@
     <string name="ingredients">ingredients</string>
     <string name="title_activity_recipe_step_details" translatable="false"> </string>
     <string name="title_collection_widget">BakingApp Recipes</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
+    <string name="alert_exit_doubleclick">Please click BACK again to exit</string>
 </resources>

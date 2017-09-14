@@ -21,4 +21,7 @@
     <string name="ingredients">ingredients</string>
     <string name="title_collection_widget">BakingApp Recettes</string>
     <string name="widget_empty_text">Aucune rectte disponible, ouvre l\'application et tire vers le bas pour telecharger des recetes</string>
+
+
+    <string name="alert_exit_doubleclick">Cliquez à nouveau pour quitter</string>
 </resources>

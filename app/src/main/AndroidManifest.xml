@@ -30,13 +30,14 @@
             android:name=".data.RecipesContentProvider"
             android:authorities="@string/content_authority"
             android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:syncable="true" />
 
         <!--
              *************** SyncAdapter related stuff ****************
              **********************************************************
         -->
+
 
         <!-- SyncAdapter's authentication service -->
         <service android:name=".sync.RecipesAuthenticatorService">
@@ -67,21 +68,31 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-
         <!-- Widget stuff -->
-        <receiver android:name=".widget.StackWidgetProvider">
+        <receiver android:name=".widget.ListViewWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+
+                <!-- CUSTOM ACTIONS | click ACTION -->
+                <action android:name="cg.stevendende.bakingapp.widget.CLICK_ACTION" />
+                <action android:name="cg.stevendende.bakingapp.widget.DETAILS_ACTION" />
+
+                <!-- usefyll to allow onClickIntent to open a activity -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
 
         <service
-            android:name=".widget.StackWidgetService"
+            android:name=".widget.ListViewWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <!-- End widget stuff -->
+
     </application>
 
 </manifest>
