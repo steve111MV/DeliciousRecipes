@@ -1,5 +1,6 @@
 package cg.stevendende.deliciousrecipes.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,33 +9,31 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cg.stevendende.deliciousrecipes.BakingAppUtils;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
 import cg.stevendende.deliciousrecipes.model.WidgetItem;
+import cg.stevendende.deliciousrecipes.ui.MainActivity;
 
 /**
  * Created by STEVEN on 10/08/2017.
  */
 
-class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private static final int mCount = 10;
     private List<WidgetItem> mWidgetItems = new ArrayList<WidgetItem>();
     private Context mContext;
     private Cursor mCursor;
     private int mAppWidgetId;
 
-    public StackRemoteViewsFactory(Context context, Intent intent) {
+    public ListViewRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -113,7 +112,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         return mCursor != null ? mCursor.getCount() : 0;
     }
 
-
     // Given the position (index) of a WidgetItem in the array, use the item's text value in
     // combination with the app widget item XML file to construct a RemoteViews object.
     public RemoteViews getViewAt(int position) {
@@ -122,24 +120,28 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 mCursor == null || !mCursor.moveToPosition(position)) {
             return null;
         }
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
-        rv.setTextViewText(R.id.widget_item, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+        RemoteViews widgetRow = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
+        widgetRow.setTextViewText(android.R.id.text1, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
 
-        rv.setInt(R.id.widget_item, "setTextColor", Color.BLACK);
-        //rv.setFloat(R.id.widget_item, "setTextSize", 22.0f);
+        widgetRow.setInt(android.R.id.text1, "setTextColor", Color.WHITE);
 
-        // Next, set a fill-intent, which will be used to fill in the pending intent template
-        // that is set on the collection view in StackWidgetProvider.
+        //Define a click Intent
+        Intent intent = new Intent();
         Bundle extras = new Bundle();
-        extras.putInt(StackWidgetProvider.EXTRA_ITEM, position);
-        Intent fillInIntent = new Intent();
-        fillInIntent.putExtras(extras);
+
+        //set DATA i bundle
+        extras.putString(ListViewWidgetProvider.EXTRA_ITEM_ID, mCursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "");
+        extras.putString(ListViewWidgetProvider.EXTRA_ITEM, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+
+        intent.putExtras(extras);
+        widgetRow.setOnClickFillInIntent(android.R.id.text1, intent);
+
         // Make it possible to distinguish the individual on-click
         // action of a given item
-        rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
+        //widgetRow.setOnClickPendingIntent(R.id.widgetListView, PendingIntent.getBroadcast(mContext,0,intent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         // Return the RemoteViews object.
-        return rv;
+        return widgetRow;
     }
 
     /**
