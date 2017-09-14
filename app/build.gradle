@@ -20,20 +20,6 @@ android {
 
     signingConfigs {
 
-        /*
-        config {
-            keyAlias 'MAIN'
-            keyPassword 'steve111'
-            storeFile file('C:/Nanodegree/stevendende.keystore.jks')
-            storePassword 'steve111@'
-        }*/
-        config2 {
-            keyAlias 'SV'
-            keyPassword 'steve111'
-            storeFile file('C:/Nanodegree/silicon.keystore.jks')
-            storePassword 'steve111'
-        }
-
         lintOptions {
             disable 'MissingTranslation'
         }

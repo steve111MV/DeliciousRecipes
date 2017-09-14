@@ -214,10 +214,8 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         initializeMediaSession();
 
         // Initialize the player.
-        //initializePlayer(Uri.parse(videoUrl));
+        initializePlayer(Uri.parse(videoUrl));
 
-        //initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
-        initializePlayer(Uri.parse("http://192.168.8.101/udacity/test.mp4"));
     }
 
     /**
