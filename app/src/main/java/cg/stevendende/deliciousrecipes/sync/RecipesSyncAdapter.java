@@ -23,7 +23,16 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
 import cg.stevendende.deliciousrecipes.ApiJSONParser;
+import cg.stevendende.deliciousrecipes.Constants;
 import cg.stevendende.deliciousrecipes.MyApplication;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.data.RecipesContract;
@@ -37,8 +46,8 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Interval at which to sync with the API, in seconds.
     // 60 seconds (1 minute) * 2 = 2 mins
-    public static final int SYNC_INTERVAL = 10 * 60 * 60;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 2;
+    public static final int SYNC_INTERVAL = 30 * 60;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
 
     public RecipesSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -48,38 +57,20 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
 
+        //Log.i("Sync", "on perform sych");
+        //Log.e("json", Constants.JSON);
+
+
         CustomJSONArrayRequest jsonRequest = new CustomJSONArrayRequest(
                 RECIPES_JSON_URL,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonArray) {
-                        Log.i(LOG_TAG, jsonArray.toString());
-                        int recipesInsertCount = 0;
-                        int ingredientsInsertCount = 0;
-                        int stepsInsertCount = 0;
-
                         try {
-                            final int INDEX_RECIPES = 0, INDEX_INGREDIENTS = 1, INDE_STEPS = 2;
-                            //0:recipes, 1: ingredients, 2:steps
-                            Object[] apiObjects = ApiJSONParser.parseJson(jsonArray);
+                            parseJSON(jsonArray);
+                            getContext().getContentResolver().notifyChange(RecipesContract.RecipeEntry.CONTENT_URI.normalizeScheme(), null);
 
-                            recipesInsertCount = getContext()
-                                    .getContentResolver()
-                                    .bulkInsert(RecipesContract.RecipeEntry.CONTENT_URI,
-                                            (ContentValues[]) apiObjects[INDEX_RECIPES]);
-                            ingredientsInsertCount = getContext()
-                                    .getContentResolver()
-                                    .bulkInsert(RecipesContract.IngredientEntry.CONTENT_URI,
-                                            (ContentValues[]) apiObjects[INDEX_INGREDIENTS]);
-                            stepsInsertCount = getContext()
-                                    .getContentResolver()
-                                    .bulkInsert(RecipesContract.RecipeStepEntry.CONTENT_URI,
-                                            (ContentValues[]) apiObjects[INDE_STEPS]);
-
-                            Log.i(LOG_TAG, "inserted recipes " + recipesInsertCount);
-                            Log.i(LOG_TAG, "inserted ingredients for all " + ingredientsInsertCount);
-                            Log.i(LOG_TAG, "inserted steps for all " + stepsInsertCount);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -88,7 +79,6 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        getContext().getContentResolver().notifyChange(RecipesContract.RecipeEntry.CONTENT_URI, null);
                     }
                 }
         );
@@ -97,6 +87,43 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    private void parseJSON(JSONArray jsonArray) throws JSONException {
+        Log.e(LOG_TAG, jsonArray.toString());
+        int recipesInsertCount = 0;
+        int ingredientsInsertCount = 0;
+        int stepsInsertCount = 0;
+
+        try {
+            final int INDEX_RECIPES = 0, INDEX_INGREDIENTS = 1, INDEX_STEPS = 2;
+            //0:recipes, 1: ingredients, 2:steps
+            Object[] apiObjects = ApiJSONParser.parseJson(jsonArray);
+
+            recipesInsertCount = getContext()
+                    .getContentResolver()
+                    .bulkInsert(RecipesContract.RecipeEntry.CONTENT_URI,
+                            (ContentValues[]) apiObjects[INDEX_RECIPES]);
+
+            ingredientsInsertCount = getContext()
+                    .getContentResolver()
+                    .bulkInsert(RecipesContract.IngredientEntry.CONTENT_URI,
+                            (ContentValues[]) apiObjects[INDEX_INGREDIENTS]);
+
+            stepsInsertCount = getContext()
+                    .getContentResolver()
+                    .bulkInsert(RecipesContract.RecipeStepEntry.CONTENT_URI,
+                            (ContentValues[]) apiObjects[INDEX_STEPS]);
+
+            if (recipesInsertCount > 0) {
+                getContext().getContentResolver().notifyChange(RecipesContract.RecipeEntry.CONTENT_URI, null, false);
+            }
+
+            Log.e(LOG_TAG, "inserted recipes " + recipesInsertCount);
+            Log.e(LOG_TAG, "inserted ingredients for all " + ingredientsInsertCount);
+            Log.e(LOG_TAG, "inserted steps for all " + stepsInsertCount);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     /**
      * Helper method to schedule the sync adapter periodic execution
      */
@@ -185,6 +212,6 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public static void initializeSyncAdapter(Context context) {
         getSyncAccount(context);
-        //Log.i("Sync", "initializing");
+        Log.i("Sync", "initializing");
     }
 }

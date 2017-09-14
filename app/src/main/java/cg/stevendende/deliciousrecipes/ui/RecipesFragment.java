@@ -70,13 +70,15 @@ public class RecipesFragment extends Fragment implements
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public android.support.v4.content.Loader onCreateLoader(int id, Bundle args) {
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+
+        Log.e("BALog_onCreLoad", "in on create loader, URI:");
         //build the query
         return new android.support.v4.content.CursorLoader(
                 //use either getActivity() or getContext()
-                getActivity() != null ? getActivity() : getContext(),
-                RecipesContract.RecipeEntry.CONTENT_URI,
+                getActivity(),
+                RecipesContract.RecipeEntry.CONTENT_URI.normalizeScheme(),
                 RecipesContract.RecipeEntry.COLUMNS_RECIPES,
                 null, null,
                 RecipesContract.RecipeEntry.TABLE_NAME

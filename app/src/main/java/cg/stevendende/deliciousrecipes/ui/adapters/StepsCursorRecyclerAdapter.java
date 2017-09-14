@@ -43,6 +43,8 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
         myHolder.stepID = cursor.getInt(0) + "";
         //short description
         myHolder.tvName.setText(cursor.getString(1));
+
+        //implementation of android accecibilities
         myHolder.tvName.setContentDescription(cursor.getString(1));
 
         //the display ID has to start by 0, that's why we reduce of "-1"
