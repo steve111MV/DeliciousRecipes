@@ -17,7 +17,7 @@ public class MyApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
     }
 
     public MyApplication() {
@@ -27,7 +27,7 @@ public class MyApplication extends Application {
         mContext = context;
         mRequestQueue = getRequestQueue();
 
-        //Stetho.initializeWithDefaults(this);
+        Stetho.initializeWithDefaults(context);
     }
 
     public static synchronized MyApplication getInstance(Context context) {
