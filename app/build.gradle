@@ -8,17 +8,44 @@ android {
 
     defaultConfig {
         applicationId "cg.stevendende.deliciousrecipes"
-        minSdkVersion 14
+        //RecyclerView expresso tests min SDK
+        minSdkVersion 16
+        //minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+
+    signingConfigs {
+
+        /*
+        config {
+            keyAlias 'MAIN'
+            keyPassword 'steve111'
+            storeFile file('C:/Nanodegree/stevendende.keystore.jks')
+            storePassword 'steve111@'
+        }*/
+        config2 {
+            keyAlias 'SV'
+            keyPassword 'steve111'
+            storeFile file('C:/Nanodegree/silicon.keystore.jks')
+            storePassword 'steve111'
+        }
+
+        lintOptions {
+            disable 'MissingTranslation'
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.config2
             minifyEnabled false
             shrinkResources false
+
+            debuggable true
             proguardFile "proguard-butterknife-7.pro"
             proguardFile "proguard-glide-rules.pro"
             proguardFile "proguard-support-v7-appcompat.pro"
@@ -33,6 +60,24 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2') {
+        // Necessary to avoid version conflicts
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2') {
+        // Necessary to avoid version conflicts
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+
+    androidTestCompile('com.forkingcode.espresso.contrib:espresso-descendant-actions:1.0.0') {
+        exclude module: 'support-annotations'
+        exclude module: 'test'
+    }
     //compile 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
