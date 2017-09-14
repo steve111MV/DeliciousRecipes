@@ -8,18 +8,20 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cg.stevendende.deliciousrecipes.BakingAppUtils;
 import cg.stevendende.deliciousrecipes.R;
 import cg.stevendende.deliciousrecipes.sync.RecipesSyncAdapter;
+import cg.stevendende.deliciousrecipes.widget.ListViewWidgetProvider;
 
 import static cg.stevendende.deliciousrecipes.ui.RecipeDetailsFragment.EXTRA_RECIPE_NAME;
 
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private String mCurrentFragment = TAG_MAIN_FRAGMENT;
 
     private boolean mTwoPane = false;
-    private boolean readyToExit = false;
+    private boolean isReadyForExit = false;
     private int mFragmentContainerId;
 
     @SuppressWarnings("WeakerAccess")
@@ -56,11 +58,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        RecipesSyncAdapter.initializeSyncAdapter(this);
         setSupportActionBar(toolbar);
+
+        RecipesSyncAdapter.initializeSyncAdapter(this);
 
         // Set activity to FullScreen when il Landscape and playing a recipe video
         if (mCurrentFragment.equals(TAG_RECIPE_DETAILS_FRAGMENT)
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        }
+            }
 
         if (findViewById(R.id.recipe_detail_fragment_container) != null) {
             // The detail container view will be present only in the large-screen layouts
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity
             mFragmentContainerId = R.id.fragment_container;
 
             //getSupportActionBar().setElevation(0f);
-        }
+            }
 
         if (!mTwoPane && savedInstanceState == null) {
             getSupportFragmentManager()
@@ -121,10 +125,20 @@ public class MainActivity extends AppCompatActivity
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                    }
+                        }
                 }, SWIPE_REFRESHING_TIMEOUT);
+
             }
         });
+
+
+        //If there's an Intent then (From the widget),
+        // we load the corresponding recipe Steps Fragment
+        Intent intent = getIntent();
+
+        if (intent != null && intent.getAction().equals(ListViewWidgetProvider.ACTION_WIDGET_CLICK)) {
+            onNewIntent(intent);
+        }
     }
 
     @Override
@@ -268,24 +282,51 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        //Handle the widget item click
+        if (intent.getAction().equals(ListViewWidgetProvider.ACTION_WIDGET_CLICK)) {
+            onRecipeItemClick(
+                    intent.getStringExtra(ListViewWidgetProvider.EXTRA_ITEM_ID),
+                    intent.getStringExtra(ListViewWidgetProvider.EXTRA_ITEM)
+            );
+        }
+    }
+
+    void setReadyForExit() {
+        isReadyForExit = true;
+
+        Snackbar.make((View) toolbar.getParent(), R.string.alert_exit_doubleclick, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onBackPressed() {
 
         if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
             mCurrentFragment = TAG_RECIPE_DETAILS_FRAGMENT;
             setTitle(mSelectedRecipeName);
+            super.onBackPressed();
         } else if (mCurrentFragment.equals(TAG_STEP_DETAILS)) {
             mCurrentFragment = TAG_RECIPE_DETAILS_FRAGMENT;
             setTitle(mSelectedRecipeName);
+            super.onBackPressed();
         } else if (mCurrentFragment.equals(TAG_RECIPE_DETAILS_FRAGMENT)) {
 
             mCurrentFragment = TAG_MAIN_FRAGMENT;
             resetAppTitle();
             hideBackButton();
+            super.onBackPressed();
         } else if (mCurrentFragment.equals(TAG_MAIN_FRAGMENT)) {
             //TODO hint a double-click to exit
-            hideBackButton();
-        }
+            //hideBackButton();
+            if (isReadyForExit) {
+                super.onBackPressed();
+            } else {
+                setReadyForExit();
+            }
 
-        super.onBackPressed();
+        } else super.onBackPressed();
+
     }
 }
