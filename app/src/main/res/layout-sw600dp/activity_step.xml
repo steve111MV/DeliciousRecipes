@@ -15,24 +15,35 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:id="@+id/toolbar" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <fragment
-            android:id="@+id/recipes_fragment"
-            android:name="cg.stevendende.deliciousrecipes.ui.RecipesFragment"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            />
+        android:baselineAligned="false"
+        android:divider="?android:attr/dividerHorizontal"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="cg.stevendende.deliciousrecipes.ui.MainActivity">
+        <!--
+        This layout is a two-pane layout for the Items(recipes) master/detail flow.
+        -->
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <FrameLayout
+            android:id="@+id/details_fragment_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:background="@color/app_main_color" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

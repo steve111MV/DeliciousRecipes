@@ -130,7 +130,8 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
         Bundle extras = new Bundle();
 
         //set DATA i bundle
-        extras.putString(ListViewWidgetProvider.EXTRA_ITEM_ID, mCursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "");
+        //extras.putString(ListViewWidgetProvider.EXTRA_ITEM_STEP_ID, mCursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "");
+        extras.putString(ListViewWidgetProvider.EXTRA_ITEM_RECIPE_ID, mCursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "");
         extras.putString(ListViewWidgetProvider.EXTRA_ITEM, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
 
         intent.putExtras(extras);

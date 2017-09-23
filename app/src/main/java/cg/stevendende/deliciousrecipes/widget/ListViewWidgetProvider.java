@@ -25,7 +25,8 @@ public class ListViewWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_DETAILS = "cg.stevendende.bakingapp.widget.DETAILS_ACTION";
     public static final String ACTION_WIDGET_CLICK = "cg.stevendende.bakingapp.widget.CLICK_ACTION";
     public static final String EXTRA_ITEM = "cg.stevendende.backingapp.widget.EXTRA_ITEM";
-    public static final String EXTRA_ITEM_ID = "cg.stevendende.backingapp.widget.EXTRA_ITEM_ID";
+    public static final String EXTRA_ITEM_STEP_ID = "cg.stevendende.backingapp.widget.EXTRA_ITEM_STEP_ID";
+    public static final String EXTRA_ITEM_RECIPE_ID = "cg.stevendende.backingapp.widget.EXTRA_ITEM_RECIPE_ID";
 
     // Called when the BroadcastReceiver receives an Intent broadcast.
     // Checks to see whether the intent's action is TOAST_ACTION. If it is, the app widget
@@ -35,19 +36,7 @@ public class ListViewWidgetProvider extends AppWidgetProvider {
 
         //AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         if (intent.getAction().equals(ACTION_DETAILS)) {
-
             Log.i("BALog", "clicked on e item, action:" + intent.getAction());
-        } else if (intent.getAction().equals(ACTION_WIDGET_CLICK)) {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-            int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
-            Toast.makeText(context, "Touched view " + viewIndex, Toast.LENGTH_SHORT).show();
-            Log.i("BALog", "clicked on e item, action widget_click__" + intent.getAction());
-        } else if (intent.getAction().equals(ACTION_TOAST)) {
-            Toast.makeText(context, "Touched view - Toast--- ", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Log.i("BALog", "clicked on item, no action: è " + intent.getAction());
         }
 
         Toast.makeText(context, "Touched view ", Toast.LENGTH_SHORT).show();

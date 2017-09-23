@@ -41,8 +41,10 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
 
         //id
         myHolder.stepID = cursor.getInt(0) + "";
+
         //short description
-        myHolder.tvName.setText(cursor.getString(1));
+        myHolder.stepName = cursor.getString(1);
+        myHolder.tvName.setText(myHolder.stepName);
 
         //implementation of android accecibilities
         myHolder.tvName.setContentDescription(cursor.getString(1));
@@ -80,7 +82,7 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
         @Override
         public void onClick(View v) {
             if (mCallback != null)
-                mCallback.onStepItemClick(stepID);
+                mCallback.onStepItemClick(stepID, stepName);
         }
     }
 
@@ -100,6 +102,6 @@ public class StepsCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recycl
     } */
 
     public interface RecipesAdapterInteractionInterface {
-        void onStepItemClick(String stepID);
+        void onStepItemClick(String stepID, String stepName);
     }
 }

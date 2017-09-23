@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,10 +39,10 @@ public class RecipeDetailsFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>,
         StepsCursorRecyclerAdapter.RecipesAdapterInteractionInterface {
     // parameters initialization
-    public static final String EXTRA_RECIPE_NAME = "recipe_name";
     public static final int LOADER_ID = 2;
 
     private String mRecipeID;
+    private String mStepID;
     private String mRecipeName;
 
     private StepsCallbackInterface mListener;
@@ -64,15 +65,14 @@ public class RecipeDetailsFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param recipeId   Parameter 1.
-     * @param recipeName Parameter 2.
+     * @param stepId Parameter 1.
      * @return A new instance of fragment RecipeDetailsFragment.
      */
-    public static RecipeDetailsFragment newInstance(String recipeId, String recipeName) {
+    public static RecipeDetailsFragment newInstance(String recipeId, String stepId) {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
         Bundle args = new Bundle();
+        args.putString(MainActivity.EXTRA_STEP_ID, stepId);
         args.putString(MainActivity.EXTRA_RECIPE_ID, recipeId);
-        args.putString(EXTRA_RECIPE_NAME, recipeName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,7 +82,7 @@ public class RecipeDetailsFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mRecipeID = getArguments().getString(MainActivity.EXTRA_RECIPE_ID);
-            mRecipeName = getArguments().getString(EXTRA_RECIPE_NAME);
+            mStepID = getArguments().getString(MainActivity.EXTRA_STEP_ID);
         }
     }
 
@@ -97,7 +97,8 @@ public class RecipeDetailsFragment extends Fragment
             String tmpRecipeID = savedInstanceState.getString(MainActivity.EXTRA_RECIPE_ID);
             if (tmpRecipeID != null) {
                 mRecipeID = tmpRecipeID;
-                mRecipeName = savedInstanceState.getString(EXTRA_RECIPE_NAME);
+                mStepID = savedInstanceState.getString(MainActivity.EXTRA_STEP_ID);
+                //mRecipeName = savedInstanceState.getString(EXTRA_RECIPE_NAME);
             }
         }
 
@@ -115,12 +116,18 @@ public class RecipeDetailsFragment extends Fragment
         mIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onIngredientsClickListener(mRecipeID);
+                mListener.onIngredientsClick(mRecipeID);
             }
         });
 
         mCursorAdapter.setCallbackListener(this);
         return rootview;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -232,8 +239,8 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     @Override
-    public void onStepItemClick(String stepID) {
-        mListener.onStepClickListener(mRecipeID, stepID);
+    public void onStepItemClick(String stepID, String stepName) {
+        mListener.onStepItemclick(stepID, stepName);
     }
 
     /**
@@ -247,15 +254,15 @@ public class RecipeDetailsFragment extends Fragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface StepsCallbackInterface {
-        void onStepClickListener(String recipeID, String stepID);
-        void onIngredientsClickListener(String recipeID);
+        void onStepItemclick(String stepId, String stepName);
+
+        void onIngredientsClick(String recipeID);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
         outState.putString(MainActivity.EXTRA_RECIPE_ID, mRecipeID);
-        outState.putString(EXTRA_RECIPE_NAME, mRecipeName);
         super.onSaveInstanceState(outState);
     }
 }

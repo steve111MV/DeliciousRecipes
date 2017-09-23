@@ -2,6 +2,7 @@ package cg.stevendende.deliciousrecipes.ui;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,8 +31,7 @@ public class RecipesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, RecipesCursorRecyclerAdapter.RecipesAdapterInteractionInterface {
 
     public static final int LOADER_ID = 0;
-
-    private RecipesFragmentCallbackInterface mListener;
+    public static final String ACTION_MAIN_ACTIVITY = "cg.stevendende.deliciousrecipes.action.mainactivity";
 
     GridLayoutManager mGridLayoutManager;
     RecipesCursorRecyclerAdapter mCursorAdapter;
@@ -46,7 +46,7 @@ public class RecipesFragment extends Fragment implements
         View rootview = inflater.inflate(R.layout.fragment_recipes, container, false);
         ButterKnife.bind(this, rootview);
 
-        final int SPAN_COUNT = 1;
+        final int SPAN_COUNT = getResources().getInteger(R.integer.recipes_span_count);
         mGridLayoutManager = new GridLayoutManager(
                 getActivity(),
                 SPAN_COUNT,
@@ -151,6 +151,7 @@ public class RecipesFragment extends Fragment implements
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
+    /*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -167,13 +168,20 @@ public class RecipesFragment extends Fragment implements
         super.onDetach();
         mListener = null;
     }
+    */
 
     @Override
     public void onItemClick(String recipeID, String itemName) {
-        mListener.onRecipeItemClick(recipeID, itemName);
+        Intent intent = new Intent(getActivity(), StepActivity.class);
+        intent.setAction(ACTION_MAIN_ACTIVITY);
+
+        Bundle data = new Bundle();
+        data.putString(MainActivity.EXTRA_RECIPE_ID, recipeID);
+        data.putString(MainActivity.EXTRA_RECIPE_NAME, itemName);
+
+        Log.e("BALog", itemName);
+        intent.putExtras(data);
+        getActivity().startActivity(intent);
     }
 
-    public interface RecipesFragmentCallbackInterface {
-        void onRecipeItemClick(String recipeID, String name);
-    }
 }
