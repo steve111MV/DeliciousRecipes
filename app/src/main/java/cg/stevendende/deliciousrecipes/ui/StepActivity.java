@@ -129,7 +129,13 @@ public class StepActivity extends AppCompatActivity
             if (tmpRecipeID != null) {
                 mRecipeID = tmpRecipeID;
                 mSelectedRecipeName = savedInstanceState.getString(MainActivity.EXTRA_RECIPE_NAME);
+                mSelectedStepName = savedInstanceState.getString(MainActivity.EXTRA_STEP_NAME);
+                mCurrentFragment = savedInstanceState.getString(MainActivity.EXTRA_CURRENT_FRAGMENT);
             }
+
+            //keep Recipe Step OR Recipe Ingredients
+            // on top of Toolbar after Srceen rotation
+            switchToolbarTitles();
         }
 
         //If there's an Intent then (From the widget),
@@ -177,26 +183,6 @@ public class StepActivity extends AppCompatActivity
 
 
             getSupportActionBar().setTitle(mSelectedRecipeName + " - " + mSelectedStepName);
-
-                /*
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(mFragmentContainerId,
-                                StepDetailsFragment.newInstance(mRecipeID, stepID))
-                        .commit();
-
-                Intent intent = new Intent(this, RecipeStepDetailsActivity.class);
-                intent.putExtra(MainActivity.EXTRA_RECIPE_ID, mRecipeID);
-                intent.putExtra(MainActivity.EXTRA_STEP_ID, mStepID);
-                intent.putExtra(MainActivity.EXTRA_RECIPE_NAME, mSelectedRecipeName);
-                intent.putExtra(MainActivity.EXTRA_STEP_NAME, mSelectedStepName);
-
-                startActivity(intent);
-                */
-            //showBackButton();
-
-
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
@@ -249,8 +235,6 @@ public class StepActivity extends AppCompatActivity
                 savedInstanceState.getString(MainActivity.EXTRA_STEP_ID);
         mCurrentFragment =
                 savedInstanceState.getString(EXTRA_CURRENT_FRAGMENT);
-
-        switchToolbarTitles();
     }
 
     /**
@@ -259,8 +243,11 @@ public class StepActivity extends AppCompatActivity
     private void switchToolbarTitles() {
         if (mCurrentFragment.equals(TAG_INGREDIENTS_FRAGMENT)) {
             getSupportActionBar().setTitle(mSelectedRecipeName + " - " + getString(R.string.ingredients));
-        } else if (mCurrentFragment.equals(TAG_RECIPE_DETAILS_FRAGMENT)) {
-            getSupportActionBar().setTitle(mSelectedRecipeName);
+        } else {
+            if (mTwoPane)
+                getSupportActionBar().setTitle(mSelectedRecipeName + " - " + mSelectedStepName);
+            else
+                getSupportActionBar().setTitle(mSelectedRecipeName);
         }
     }
 

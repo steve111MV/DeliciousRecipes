@@ -16,15 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <!--TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:scrollHorizontally="false"
-                android:text="@string/lorem"
-                android:textColor="@color/colorTextPrimary"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/expandable_layout_text_size" /-->
+
             <com.google.android.exoplayer2.ui.SimpleExoPlayerView
                 android:id="@+id/exoPlayer"
                 android:layout_width="match_parent"
