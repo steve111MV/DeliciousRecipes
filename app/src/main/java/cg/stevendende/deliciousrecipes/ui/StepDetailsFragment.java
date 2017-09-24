@@ -78,7 +78,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     ExpandableTextLayoutMain mDesciptionExpandableTV;
 
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.shortDescription)
+    @BindView(R.id.shortDescriptionDetails)
     TextView mShortDescTV;
 
     private SimpleExoPlayer mExoPlayer;
