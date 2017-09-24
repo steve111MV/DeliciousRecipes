@@ -16,10 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -67,6 +69,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @BindView(R.id.exoPlayer)
     SimpleExoPlayerView mPlayerView;
 
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.stepImage)
+    ImageView mImageView;
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.expandable_text)
@@ -169,6 +174,13 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //release the player (resource)
+        releasePlayer();
+        mMediaSession.setActive(false);
+    }
 
     private void populateViews(RecipeStep recipeStep) {
         // here the mRecipeStep object has an instance
@@ -183,10 +195,23 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
 
         try {
-            if (mRecipeStep.getVideoUrl() != null) {
+            int MINIMUM_URL_LENGTH = 4;
+
+            if (mRecipeStep.getVideoUrl() != null && !mRecipeStep.getVideoUrl().isEmpty() && mRecipeStep.getVideoUrl().length() > MINIMUM_URL_LENGTH) {
+
+                mImageView.setVisibility(View.GONE);
+                mPlayerView.setVisibility(View.VISIBLE);
+
                 loadVideo(mRecipeStep.getVideoUrl());
-            } else if (mRecipeStep.getThumbnailUrl() != null) {
-                loadVideo(mRecipeStep.getThumbnailUrl());
+            } else if (mRecipeStep.getThumbnailUrl() != null && !mRecipeStep.getThumbnailUrl().isEmpty() && mRecipeStep.getThumbnailUrl().length() > MINIMUM_URL_LENGTH) {
+
+                mImageView.setVisibility(View.VISIBLE);
+                mPlayerView.setVisibility(View.GONE);
+
+                loadImage(mRecipeStep.getThumbnailUrl());
+            } else {
+                mImageView.setVisibility(View.GONE);
+                mPlayerView.setVisibility(View.GONE);
             }
         } catch (OutOfMemoryError ex) {
             ex.printStackTrace();
@@ -218,17 +243,27 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
     }
 
+    void releasePlayer() {
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
+    }
+
     private void loadVideo(String videoUrl) throws OutOfMemoryError {
         // Initialize the Media Session.
         initializeMediaSession();
 
         // Initialize the player.
-        //initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
-        initializePlayer(Uri.parse(videoUrl));
+        initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
+        //initializePlayer(Uri.parse(videoUrl));
     }
 
     private void loadImage(String imageUrl) {
-
+        Glide.with(getActivity())
+                .load(imageUrl)
+                .centerCrop()
+                .crossFade()
+                .into(mImageView);
     }
 
     /**
