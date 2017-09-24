@@ -133,7 +133,11 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                 @Override
                 protected void onPostExecute(RecipeStep recipeStep) {
                     mRecipeStep = recipeStep;
-                    populateViews(recipeStep);
+                    try {
+                        populateViews(recipeStep);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }.execute(cursor);
         } else {
@@ -147,7 +151,13 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        populateViews(mRecipeStep);
+        if (savedInstanceState != null) {
+            try {
+                populateViews(mRecipeStep);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -177,12 +187,20 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        //release the player (resource)
-        releasePlayer();
-        mMediaSession.setActive(false);
+
+        try {
+            //release the player (resource)
+            releasePlayer();
+            mMediaSession.setActive(false);
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+        } catch (Exception ex) {
+            Log.e("BALog", "exolayer unlnown bug --- " + ex.getMessage());
+        }
+
     }
 
-    private void populateViews(RecipeStep recipeStep) {
+    private void populateViews(RecipeStep recipeStep) throws Exception {
         // here the mRecipeStep object has an instance
 
         if (mRecipeStep == null) {
@@ -243,7 +261,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
     }
 
-    void releasePlayer() {
+    void releasePlayer() throws Exception {
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
