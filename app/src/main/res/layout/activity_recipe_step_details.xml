@@ -12,7 +12,14 @@
     android:background="@color/app_main_color"
     android:orientation="vertical"
         android:fitsSystemWindows="true">
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+
+        <ImageView
+            android:id="@+id/stepImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/step_video_height"
+            android:visibility="gone" />
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/exoPlayer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/step_video_height"

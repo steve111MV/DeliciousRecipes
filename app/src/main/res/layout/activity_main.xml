@@ -27,12 +27,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment
-            android:id="@+id/recipes_fragment"
-            android:name="cg.stevendende.deliciousrecipes.ui.RecipesFragment"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent">
+
+            <fragment
+                android:id="@+id/recipes_fragment"
+                android:name="cg.stevendende.deliciousrecipes.ui.RecipesFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/fragment_recipes" />
+        </FrameLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>

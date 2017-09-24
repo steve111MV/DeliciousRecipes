@@ -13,7 +13,14 @@
     android:orientation="vertical"
         android:fitsSystemWindows="true">
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+
+        <ImageView
+            android:id="@+id/stepImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/step_video_height"
+            android:visibility="gone" />
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/exoPlayer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/step_video_height"

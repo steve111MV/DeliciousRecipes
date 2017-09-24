@@ -37,7 +37,7 @@ public class RecipesFragment extends Fragment implements
     RecipesCursorRecyclerAdapter mCursorAdapter;
 
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.myRecyclerView)
     RecyclerView mRecyclerView;
 
     @Nullable
