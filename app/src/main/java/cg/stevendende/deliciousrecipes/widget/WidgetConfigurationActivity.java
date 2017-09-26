@@ -88,7 +88,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
                     @Override
                     public int getCount() {
                         if (recipesTextValues != null)
-                            return recipesTextValues.length;
+                            return recipesTextValues[0].length;
                         return 0;
                     }
 
