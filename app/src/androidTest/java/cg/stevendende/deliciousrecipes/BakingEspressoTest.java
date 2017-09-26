@@ -25,7 +25,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  * Created by STEVEN on 15/08/2017.
  */
 //@RunWith(AndroidJUnit4.class)
-public class BakingExpressoTest {
+public class BakingEspressoTest {
 
     // 1st recipe / 3rd step
     public static final String RECIPE_CHEESCAKE_FIRST__STEP_THIRD__SHORT_DESCRIPTION = "Prep the cookie crust.";
