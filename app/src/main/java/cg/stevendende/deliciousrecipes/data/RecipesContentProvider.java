@@ -88,6 +88,8 @@ public class RecipesContentProvider extends ContentProvider {
 
         //INGREDIENTS
         matcher.addURI(authority, RecipesContract.PATH_RECIPE_INGREDIENTS, INGREDIENTS);
+        //used by the widget Config Activity
+        matcher.addURI(authority, RecipesContract.PATH_RECIPE_INGREDIENTS + "/#", INGREDIENTS);
 
         //RECIPE STEPS
         matcher.addURI(authority, RecipesContract.PATH_RECIPE_STEPS, RECIPE_STEPS);
@@ -215,6 +217,14 @@ public class RecipesContentProvider extends ContentProvider {
             }
             break;
             case INGREDIENTS: {
+                String recipeID = uri.getLastPathSegment();
+                if (selection == null) {
+                    selection = RecipesContract.IngredientEntry.COLUMN_RECIPE_ID + " = ?";
+                }
+                if (selectionArgs == null) {
+                    selectionArgs = new String[]{recipeID};
+                }
+
                 returnCursor = mOpenHelper.getReadableDatabase().query(
                         RecipesContract.IngredientEntry.TABLE_NAME,
                         RecipesContract.IngredientEntry.COLUMNS_INGREDIENTS,

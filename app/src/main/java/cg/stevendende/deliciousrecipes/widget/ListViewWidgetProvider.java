@@ -39,7 +39,6 @@ public class ListViewWidgetProvider extends AppWidgetProvider {
             Log.i("BALog", "clicked on e item, action:" + intent.getAction());
         }
 
-        Toast.makeText(context, "Touched view ", Toast.LENGTH_SHORT).show();
         super.onReceive(context, intent);
     }
 
@@ -84,6 +83,7 @@ public class ListViewWidgetProvider extends AppWidgetProvider {
         rv.setPendingIntentTemplate(R.id.widgetListView, startActivityPendingIntent);
         */
 
+        /*
         Intent clickIntent = new Intent(context, MainActivity.class);
         clickIntent.setAction(ACTION_WIDGET_CLICK);
         clickIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -93,7 +93,7 @@ public class ListViewWidgetProvider extends AppWidgetProvider {
                         PendingIntent.FLAG_UPDATE_CURRENT);
         clickIntent.setData(Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME)));
         rv.setPendingIntentTemplate(R.id.widgetListView, clickPI);
-
+        */
 
         return rv;
     }
