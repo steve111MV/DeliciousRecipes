@@ -38,4 +38,5 @@
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="recipe_item_pading_top">10dp</dimen>
     <dimen name="recipe_item_pading_bottom">10dp</dimen>
+    <dimen name="widget_item_ingredient_padding">5dp</dimen>
 </resources>

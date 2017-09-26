@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
@@ -32,11 +33,14 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
     private Context mContext;
     private Cursor mCursor;
     private int mAppWidgetId;
+    private String mRecipeID;
 
     public ListViewRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
+
+        mRecipeID = PreferenceManager.getDefaultSharedPreferences(context).getString(WidgetConfigurationActivity.EXTRA_SELECTED_RECIPE_PREF, "1");
     }
 
     public void onCreate() {
@@ -47,6 +51,23 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
         //mWidgetItems.add(new WidgetItem(" Widget number "+i));
         //}
 
+        mCursor = mContext.getContentResolver().query(
+                RecipesContract.IngredientEntry.buildIngedientUri(Long.valueOf(mRecipeID)),
+                RecipesContract.IngredientEntry.COLUMNS_INGREDIENTS, null, null,
+                RecipesContract.IngredientEntry.TABLE_NAME
+                        + "." + RecipesContract.IngredientEntry._ID);
+
+        if (mCursor != null) {
+
+            while (mCursor.moveToNext()) {
+                mWidgetItems.add(
+                        new WidgetItem(
+                                mCursor.getString(RecipesContract.IngredientEntry.INDEX_QUANTITY),
+                                mCursor.getString(RecipesContract.IngredientEntry.INDEX_MEASURE),
+                                mCursor.getString(RecipesContract.IngredientEntry.INDEX_INGREDIENT)));
+            }
+        }
+        /*
         mCursor = mContext.getContentResolver().query(RecipesContract.RecipeEntry.CONTENT_URI,
 
                 RecipesContract.RecipeEntry.COLUMNS_RECIPES,
@@ -58,7 +79,7 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
             while (mCursor.moveToNext()) {
                 mWidgetItems.add(new WidgetItem(mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME)));
             }
-        }
+        }*/
 
 
     }
@@ -80,12 +101,19 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
         }
 
         final long identityToken = Binder.clearCallingIdentity();
-        Uri uri = RecipesContract.RecipeEntry.CONTENT_URI;
+
+        mCursor = mContext.getContentResolver().query(
+                RecipesContract.IngredientEntry.buildIngedientUri(Long.valueOf(mRecipeID)),
+                RecipesContract.IngredientEntry.COLUMNS_INGREDIENTS, null, null,
+                RecipesContract.IngredientEntry.TABLE_NAME
+                        + "." + RecipesContract.IngredientEntry._ID);
+        /*
         mCursor = mContext.getContentResolver().query(uri,
                 null,
                 null,
                 null,
                 RecipesContract.RecipeEntry._ID + " DESC");
+                */
 
         Binder.restoreCallingIdentity(identityToken);
     }
@@ -120,10 +148,10 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
                 mCursor == null || !mCursor.moveToPosition(position)) {
             return null;
         }
-        RemoteViews widgetRow = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
-        widgetRow.setTextViewText(android.R.id.text1, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
-
-        widgetRow.setInt(android.R.id.text1, "setTextColor", Color.WHITE);
+        RemoteViews widgetRow = new RemoteViews(mContext.getPackageName(), R.layout.widget_item_ingredient);
+        widgetRow.setTextViewText(R.id.quantity, mWidgetItems.get(position).quantity);
+        widgetRow.setTextViewText(R.id.measure, mWidgetItems.get(position).measure);
+        widgetRow.setTextViewText(R.id.ingredient, mWidgetItems.get(position).ingredient);
 
         //Define a click Intent
         Intent intent = new Intent();
@@ -131,11 +159,11 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
 
         //set DATA i bundle
         //extras.putString(ListViewWidgetProvider.EXTRA_ITEM_STEP_ID, mCursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "");
-        extras.putString(ListViewWidgetProvider.EXTRA_ITEM_RECIPE_ID, mCursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "");
-        extras.putString(ListViewWidgetProvider.EXTRA_ITEM, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+        //extras.putString(ListViewWidgetProvider.EXTRA_ITEM_RECIPE_ID, mRecipeID);
+        //extras.putString(ListViewWidgetProvider.EXTRA_ITEM, mCursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
 
         intent.putExtras(extras);
-        widgetRow.setOnClickFillInIntent(android.R.id.text1, intent);
+        //widgetRow.setOnClickFillInIntent(android.R.id.text1, intent);
 
         // Make it possible to distinguish the individual on-click
         // action of a given item
