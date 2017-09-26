@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -272,13 +273,14 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         initializeMediaSession();
 
         // Initialize the player.
-        initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
-        //initializePlayer(Uri.parse(videoUrl));
+        //initializePlayer(Uri.parse("http://192.168.43.163/udacity/test.mp4"));
+        initializePlayer(Uri.parse(videoUrl));
     }
 
     private void loadImage(String imageUrl) {
         Glide.with(getActivity())
                 .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .crossFade()
                 .into(mImageView);
