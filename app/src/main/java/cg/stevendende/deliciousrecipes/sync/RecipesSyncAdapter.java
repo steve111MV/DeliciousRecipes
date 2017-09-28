@@ -42,7 +42,7 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public final String LOG_TAG = RecipesSyncAdapter.class.getSimpleName();
     public static final String RECIPES_JSON_URL_REDIRECT = "http://go.udacity.com/android-baking-app-json";
-    public static final String RECIPES_JSON_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58d1537b_baking/baking.json";
+    public static final String RECIPES_JSON_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
 
     // Interval at which to sync with the API, in seconds.
     // 60 seconds (1 minute) * 2 = 2 mins
@@ -60,6 +60,12 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
         //Log.i("Sync", "on perform sych");
         //Log.e("json", Constants.JSON);
 
+        /*
+        try{
+            parseJSON(new JSONArray(Constants.JSON));
+        } catch(JSONException ex){
+            Log.e("JSON","test");
+        }*/
 
         CustomJSONArrayRequest jsonRequest = new CustomJSONArrayRequest(
                 RECIPES_JSON_URL,
@@ -79,6 +85,7 @@ public class RecipesSyncAdapter extends AbstractThreadedSyncAdapter {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
+                        Log.e("BALog", "volley request failed, network isue");
                     }
                 }
         );
