@@ -15,6 +15,13 @@ import static cg.stevendende.deliciousrecipes.ui.MainActivity.EXTRA_STEP_ID;
 public class RecipeStepDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_RECIPE_STEP = "cg.stevendende.extra.recipe";
+    public static final String EXTRA_RECIPE_STEP_VIDEO_URL = "cg.stevendende.extra.recipe.step.video";
+    public static final String EXTRA_RECIPE_STEP_IMAGE_URL = "cg.stevendende.extra.recipe.step.image";
+
+    public static final String EXTRA_EXO_PLAY_WHEN_READY = "cg.stevendende.extra.recipe.step.video.readystate";
+    public static final String EXTRA_EXO_CURRENT_WINDOW = "cg.stevendende.extra.recipe.step.video.windows.index";
+    public static final String EXTRA_EXO_PLAYBACK_POSITION = "cg.stevendende.extra.recipe.step.video.playback.position";
+
 
     private String mStepID;
     private String mRecipeID;

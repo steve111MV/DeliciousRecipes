@@ -19,6 +19,11 @@ allprojects {
     repositories {
         jcenter()
     }
+
+    ext {
+        androidSupportVersion = "26.0.0-alpha1"
+    }
+
 }
 
 task clean(type: Delete) {

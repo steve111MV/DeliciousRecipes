@@ -199,6 +199,7 @@ public class StepActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+
         outState.putString(MainActivity.EXTRA_RECIPE_ID, mRecipeID);
         outState.putString(MainActivity.EXTRA_STEP_ID, mStepID);
         outState.putString(MainActivity.EXTRA_RECIPE_NAME, mSelectedRecipeName);
