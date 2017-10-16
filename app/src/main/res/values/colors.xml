@@ -5,7 +5,7 @@
     <color name="colorPrimaryLight">#F8BBD0</color>
     <color name="colorAccent">#FF9800</color>
 
-    <color name="colorPlayerBg">#5fe2dc</color>
+    <color name="colorPlayerBg">#212121</color>
     <color name="colorRecipeStepBg">#efadce</color>
 
     <color name="colorTeal">#009688</color>

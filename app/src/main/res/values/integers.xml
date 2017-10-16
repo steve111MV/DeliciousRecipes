@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="recipes_span_count">1</integer>
+    <integer name="espresso_device_screen_tablet">0</integer>
 </resources>
