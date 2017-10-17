@@ -10,6 +10,7 @@ android {
         applicationId "cg.stevendende.deliciousrecipes"
         //RecyclerView expresso tests min SDK
         minSdkVersion 16
+
         //minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
