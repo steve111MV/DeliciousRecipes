@@ -23,13 +23,18 @@
         android:id="@+id/exoPlayer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/step_video_height"
-        android:background="@color/colorPlayerBg" />
+            android:background="@color/colorPlayerBg"
+
+            app:resize_mode="fill"
+            app:fastforward_increment="30000"
+            app:rewind_increment="30000"
+            app:show_timeout="10000" />
 
     <LinearLayout
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
@@ -57,6 +62,7 @@
         android:layout_marginRight="@dimen/expandable_layout_left_margin"
         android:background="@drawable/expandable_bg"
         android:padding="@dimen/expandable_layout_left_margin"
+        android:visibility="gone"
         app:ExpandableMaxLines="5">
 
         <TextView

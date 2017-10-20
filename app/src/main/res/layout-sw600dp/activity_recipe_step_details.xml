@@ -21,7 +21,9 @@
                 android:id="@+id/exoPlayer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPlayerBg" />
+                android:background="@color/colorPlayerBg"
+
+                app:resize_mode="fill" />
 
             <LinearLayout
                 android:id="@+id/mainCOntainer"

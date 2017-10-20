@@ -207,6 +207,7 @@ public class StepActivity extends AppCompatActivity
         outState.putString(EXTRA_CURRENT_FRAGMENT, mCurrentFragment);
 
         super.onSaveInstanceState(outState);
+
     }
 
     @Override
@@ -306,5 +307,15 @@ public class StepActivity extends AppCompatActivity
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        super.onDestroy();
     }
 }

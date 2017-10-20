@@ -1,83 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/app_main_color"
+            android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_main_color"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/stepImage"
             android:layout_width="match_parent"
             android:layout_height="@dimen/step_video_height"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@string/image"
+            android:scaleType="centerCrop" />
 
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/exoPlayer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/step_video_height"
-            android:background="@color/colorPlayerBg" />
+            android:adjustViewBounds="true"
+            app:resize_mode="fill"
+            app:fastforward_increment="30000"
+            app:rewind_increment="30000"
+            app:show_timeout="10000" />
 
 
-    <LinearLayout
-        android:id="@+id/mainCOntainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/shortDescriptionDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/ingredient_item_padding"
-            android:textColor="@color/colorTextPrimary"
-            android:textSize="@dimen/recipe_details_step_header_tv_size" />
-
-        <ImageView
-            android:id="@+id/arrowImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:rotation="10"
-            android:src="@drawable/ic_redo_black_24dp" />
-    </LinearLayout>
-
-    <cg.stevendende.deliciousrecipes.ui.customviews.ExpandableTextLayoutMain
-        android:id="@+id/expandable_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/expandable_layout_left_margin"
-        android:layout_marginRight="@dimen/expandable_layout_left_margin"
-        android:background="@drawable/expandable_bg"
-        android:padding="@dimen/expandable_layout_left_margin"
-        app:ExpandableMaxLines="5">
-
-        <TextView
-            android:id="@+id/expandable_id_show_textview"
+        <LinearLayout
+            android:id="@+id/mainCOntainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:scrollHorizontally="false"
-            android:text=""
-            android:textColor="@color/colorTextPrimary"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/expandable_layout_text_size" />
+            android:layout_below="@+id/exoPlayer"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/expandable_id_more_textview"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/shortDescriptionDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/ingredient_item_padding"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="@dimen/recipe_details_step_header_tv_size" />
+
+            <ImageView
+                android:id="@+id/arrowImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:rotation="10"
+                android:src="@drawable/ic_redo_black_24dp" />
+        </LinearLayout>
+
+        <cg.stevendende.deliciousrecipes.ui.customviews.ExpandableTextLayoutMain
+            android:id="@+id/expandable_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingRight="25dp"
-            android:paddingTop="5dp"
-            android:text="@string/review_card_expand"
-            android:textColor="@color/colorAccent" />
-    </cg.stevendende.deliciousrecipes.ui.customviews.ExpandableTextLayoutMain>
-</LinearLayout>
+            android:layout_marginLeft="@dimen/expandable_layout_left_margin"
+            android:layout_marginRight="@dimen/expandable_layout_left_margin"
+            android:background="@drawable/expandable_bg"
+            android:padding="@dimen/expandable_layout_left_margin"
+            app:ExpandableMaxLines="5">
+
+            <TextView
+                android:id="@+id/expandable_id_show_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:scrollHorizontally="false"
+                android:text=""
+                android:textColor="@color/colorTextPrimary"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/expandable_layout_text_size" />
+
+            <TextView
+                android:id="@+id/expandable_id_more_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingRight="25dp"
+                android:paddingTop="5dp"
+                android:text="@string/review_card_expand"
+                android:textColor="@color/colorAccent" />
+        </cg.stevendende.deliciousrecipes.ui.customviews.ExpandableTextLayoutMain>
+
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
