@@ -28,7 +28,9 @@
             app:resize_mode="fill"
             app:fastforward_increment="30000"
             app:rewind_increment="30000"
-            app:show_timeout="10000" />
+            app:show_timeout="10000"
+
+            />
 
     <LinearLayout
         android:id="@+id/mainContainer"

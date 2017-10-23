@@ -369,7 +369,9 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public void onPause() {
         super.onPause();
         try {
-            releasePlayer();
+            if (Util.SDK_INT <= 23) {
+                releasePlayer();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -379,7 +381,9 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public void onStop() {
         super.onStop();
         try {
-            releasePlayer();
+            if (Util.SDK_INT > 23) {
+                releasePlayer();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
