@@ -58,6 +58,7 @@ public class Constants {
             RecipesContract.RecipeStepEntry.COLUMN_DESCRIPTION + " TEXT, " +
             RecipesContract.RecipeStepEntry.COLUMN_VIDEO_URL + " TEXT, " +
             RecipesContract.RecipeStepEntry.COLUMN_IMAGE_URL + " TEXT, " +
+            RecipesContract.RecipeStepEntry.COLUMN_STEP_IMAGE_URL + " TEXT, " +
 
             RecipesContract.RecipeStepEntry.COLUMN_UNIQUE_FIELD + " TEXT NOT NULL, " +
             RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " INTEGER, " +
@@ -89,5 +90,6 @@ public class Constants {
     public static final String TAG_STEP_DESCRIPTION = "description";
     public static final String TAG_STEP_VIDEO_URL = "videoURL";
     public static final String TAG_STEP_IMAGE_URL = "thumbnailURL";
+//
 
 }
