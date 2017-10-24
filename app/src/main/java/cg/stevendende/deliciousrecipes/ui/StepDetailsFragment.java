@@ -409,8 +409,8 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public static Cursor loadStepData(String recipeID, String stepID, Context context) {
 
         //build query with parameters
-        String selection = RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " = ? AND "
-                + RecipesContract.RecipeStepEntry._ID + " = ?";
+        String selection = RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipesContract.RecipeStepEntry.COLUMN_RECIPE_ID + " = ? AND "
+                + RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipesContract.RecipeStepEntry._ID + " = ?";
 
         String[] selectionArgs = new String[]{recipeID, stepID};
 
