@@ -240,7 +240,7 @@ public class RecipesContentProvider extends ContentProvider {
             break;
             case RECIPE_STEPS: {
                 returnCursor = mOpenHelper.getReadableDatabase().query(
-                        RecipesContract.RecipeStepEntry.TABLE_NAME,
+                        RecipesContract.RecipeStepEntry.TABLE_NAME + ", " + RecipesContract.RecipeEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,

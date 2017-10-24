@@ -71,7 +71,6 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public static final String SAVE_KEY_VIDEO_URL = "videoUrl";
 
     public static final int LOADER_ID = 4;
-    private StepDetailsFragmentInterface mListener;
     private static final String TAG = StepDetailsFragment.class.getName();
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
@@ -98,6 +97,7 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     private String mStepID;
     private String mRecipeID;
     private String videoUrl;
+    private String image;
 
     private long playbackPosition;
     private int currentWindow;
@@ -105,6 +105,7 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     ViewGroup linearLayoutDetails;
     LinearLayout linearLayoutClic;
     private boolean inErrorState;
+    private String DEFAULT_IMAGE = "http://image.tmdb.org/t/p/w300/gCrELZiSAmiBOKBsvGnPi0RIdcH.jpg";
 
 
     /**
@@ -127,10 +128,6 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public void onVisibilityChange(int i) {
 
 
-    }
-
-    public interface StepDetailsFragmentInterface {
-        void onRecipeItemClick(String id, String name);
     }
 
     @Override
@@ -216,20 +213,6 @@ public class StepDetailsFragment extends Fragment implements EventListener,
 
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof StepDetailsFragmentInterface) {
-            mListener = (StepDetailsFragmentInterface) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
 
     private void populateViews(RecipeStep recipeStep) throws Exception {
         // here the mRecipeStep object has an instance
@@ -245,22 +228,28 @@ public class StepDetailsFragment extends Fragment implements EventListener,
         try {
             final int MINIMUM_URL_LENGTH = 4;
 
+            //Play video
             if (mRecipeStep.getVideoUrl() != null && !mRecipeStep.getVideoUrl().isEmpty() && mRecipeStep.getVideoUrl().length() > MINIMUM_URL_LENGTH) {
 
                 mImageView.setVisibility(View.GONE);
                 mPlayerView.setVisibility(View.VISIBLE);
                 loadVideo(mRecipeStep.getVideoUrl());
 
+                //use thumbnail if there's no video
             } else if (mRecipeStep.getThumbnailUrl() != null && !mRecipeStep.getThumbnailUrl().isEmpty() && mRecipeStep.getThumbnailUrl().length() > MINIMUM_URL_LENGTH) {
 
                 mImageView.setVisibility(View.VISIBLE);
                 mPlayerView.setVisibility(View.GONE);
 
-                //todo dowload image
                 loadDefaultImage();
 
-            } else {
+                //if recipe's image is available
+            } else if (mRecipeStep.getImage() != null && !mRecipeStep.getImage().isEmpty()) {
+                mImageView.setVisibility(View.VISIBLE);
+                mPlayerView.setVisibility(View.GONE);
 
+                loadDefaultImage();
+            } else {
                 mImageView.setVisibility(View.VISIBLE);
                 mPlayerView.setVisibility(View.GONE);
                 loadDefaultImage();
@@ -275,7 +264,7 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     //Load a default test image
     private void loadDefaultImage() {
         Glide.with(getActivity())
-                .load("http://image.tmdb.org/t/p/w300/gCrELZiSAmiBOKBsvGnPi0RIdcH.jpg")
+                .load(DEFAULT_IMAGE)
                 .centerCrop()
                 .crossFade()
                 .into(mImageView);

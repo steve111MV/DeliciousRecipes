@@ -44,6 +44,7 @@ public class RecipesContract {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_SERVINGS = "servings";
         public static final String COLUMN_IMAGE = "image";
+        public static final String COLUMN_STEP_IMAGE = "image_step";
 
         public static Uri buildRecipeUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id).normalizeScheme();
@@ -120,6 +121,7 @@ public class RecipesContract {
         public static final String COLUMN_DESCRIPTION = "desc";
         public static final String COLUMN_VIDEO_URL = "video_url";
         public static final String COLUMN_IMAGE_URL = "thumbnail_url";
+        public static final String COLUMN_STEP_IMAGE_URL = "image";
 
         public static final String COLUMN_UNIQUE_FIELD = "unique_field";
         public static final String COLUMN_RECIPE_ID = "recipe_id";
@@ -132,7 +134,8 @@ public class RecipesContract {
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+RecipesContract.RecipeStepEntry._ID,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_VIDEO_URL,
-                RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_IMAGE_URL
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_IMAGE_URL,
+                RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_STEP_IMAGE_URL
         };
 
         public static final String[] COLUMNS_STEP_DETAILS = new String[]{
@@ -140,7 +143,8 @@ public class RecipesContract {
                 RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
                 RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_VIDEO_URL,
                 RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_IMAGE_URL,
-                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_DESCRIPTION
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_DESCRIPTION,
+                RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_STEP_IMAGE_URL
         };
 
         public static final int INDEX_ID = 0;
@@ -148,6 +152,7 @@ public class RecipesContract {
         public static final int INDEX_VIDEO_URL = 2;
         public static final int INDEX_THUMBNAIL_URL = 3;
         public static final int INDEX_DESCRIPTION = 4;
+        public static final int INDEX_IMAGE_RECIPE = 5;
     }
 
     }

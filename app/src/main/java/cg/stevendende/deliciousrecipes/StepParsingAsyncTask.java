@@ -38,6 +38,7 @@ public class StepParsingAsyncTask extends AsyncTask<Cursor, Object, RecipeStep> 
                 step.setDesc(cursor.getString(RecipesContract.RecipeStepEntry.INDEX_DESCRIPTION));
                 step.setVideoUrl(cursor.getString(RecipesContract.RecipeStepEntry.INDEX_VIDEO_URL));
                 step.setThumbnailUrl(cursor.getString(RecipesContract.RecipeStepEntry.INDEX_THUMBNAIL_URL));
+                step.setImage(cursor.getString(RecipesContract.RecipeStepEntry.INDEX_IMAGE_RECIPE));
             }
         } catch (IllegalStateException | NullPointerException ex) {
             ex.printStackTrace();
