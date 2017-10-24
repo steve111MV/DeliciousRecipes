@@ -14,17 +14,19 @@ public class RecipeStep implements Parcelable {
     private String desc;
     private String videoUrl;
     private String thumbnailUrl;
+    private String image;
 
     public RecipeStep() {
 
     }
 
-    public RecipeStep(int id, String shortDesc, String desc, String videoUrl, String thumbnailUrl) {
+    public RecipeStep(int id, String shortDesc, String desc, String videoUrl, String thumbnailUrl, String image) {
         this.id = id;
         this.shortDesc = shortDesc;
         this.desc = desc;
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
+        this.image = image;
     }
 
     protected RecipeStep(Parcel in) {
@@ -33,6 +35,7 @@ public class RecipeStep implements Parcelable {
         desc = in.readString();
         videoUrl = in.readString();
         thumbnailUrl = in.readString();
+        image = in.readString();
     }
 
     public static final Creator<RecipeStep> CREATOR = new Creator<RecipeStep>() {
@@ -83,8 +86,16 @@ public class RecipeStep implements Parcelable {
         return thumbnailUrl;
     }
 
+    public String getImage() {
+        return image;
+    }
+
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public void setImage(String image) {
+        this.thumbnailUrl = image;
     }
 
     /**
@@ -117,5 +128,6 @@ public class RecipeStep implements Parcelable {
         dest.writeString(desc);
         dest.writeString(videoUrl);
         dest.writeString(thumbnailUrl);
+        dest.writeString(image);
     }
 }
