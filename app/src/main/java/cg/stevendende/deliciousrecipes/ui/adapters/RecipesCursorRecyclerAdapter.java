@@ -10,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.Random;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cg.stevendende.deliciousrecipes.R;
@@ -21,10 +25,19 @@ import cg.stevendende.deliciousrecipes.data.RecipesContract;
 
 public class RecipesCursorRecyclerAdapter extends RecyclerViewCursorAdapter<RecyclerView.ViewHolder> {
 
+    private static final int MINMIUM_URL_LENGTH = 4;
     static private RecipesAdapterInteractionInterface mCallback;
+    private Random mRand;
+    private String[] imageUrls = {
+            "https://bigoven-res.cloudinary.com/image/upload/lowfat-vegetable-lasagna-1336994.jpg",
+            "https://bigoven-res.cloudinary.com/image/upload/sweetandsourstickythaiboneless-3a944d.jpg",
+            "https://bigoven-res.cloudinary.com/image/upload/lowfat-vegetable-lasagna-1336994.jpg",
+            "http://image.tmdb.org/t/p/w300/gCrELZiSAmiBOKBsvGnPi0RIdcH.jpg"
+    };
 
     public RecipesCursorRecyclerAdapter() {
         super(null);
+        mRand = new Random();
     }
 
     @Override
@@ -43,19 +56,39 @@ public class RecipesCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recy
         myHolder.recipeId = cursor.getInt(RecipesContract.RecipeEntry.INDEX_ID) + "";
         myHolder.recipeName = cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME);
         //if there's a Thumbnail
-        if (myHolder.hasThumbnail) {
-            myHolder.imageContainer.setVisibility(View.VISIBLE);
-            myHolder.tvNameWithImage.setText(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+        myHolder.imageUrl = cursor.getString(RecipesContract.RecipeEntry.INDEX_IMAGE);
 
-            //content description for TalkBack (Android Acessibilities)
-            myHolder.tvNameWithImage.setContentDescription(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+        myHolder.tvNameWithImage.setText(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+
+        //content description for TalkBack (Android Acessibilities)
+        myHolder.tvNameWithImage.setContentDescription(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
+
+        if (myHolder.imageUrl != null && !myHolder.imageUrl.isEmpty() && myHolder.imageUrl.length() > MINMIUM_URL_LENGTH) {
+
+            Glide.with(holder.itemView.getContext())
+                    .load(myHolder.imageUrl)
+                    .crossFade()
+                    .into(myHolder.image);
+
         } else {
+            //load default image
+            Glide.with(holder.itemView.getContext())
+                    .load(getRandomImageUrl())
+                    .crossFade()
+                    .into(myHolder.image);
+        }
+        /*else {
             myHolder.imageContainer.setVisibility(View.GONE);
             myHolder.tvName.setText(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
 
             myHolder.tvName.setContentDescription(cursor.getString(RecipesContract.RecipeEntry.INDEX_NAME));
-        }
+        }*/
 
+    }
+
+    private String getRandomImageUrl() {
+
+        return imageUrls[mRand.nextInt(imageUrls.length)];
     }
 
     public void setCallbackListener(RecipesAdapterInteractionInterface callbackInterface) {
@@ -79,8 +112,8 @@ public class RecipesCursorRecyclerAdapter extends RecyclerViewCursorAdapter<Recy
         String recipeName, recipeId;
 
         //presntly using test URL
-        String imageUrl = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4";
         boolean hasThumbnail = false;
+        String imageUrl;
 
         public MyViewHolder(View itemView) {
             super(itemView);

@@ -21,7 +21,7 @@ allprojects {
     }
 
     ext {
-        androidSupportVersion = "26.0.1"
+        androidSupportVersion = "25.3.1"
     }
 
 }

@@ -8,20 +8,18 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/recipe_item_pading_top"
-        android:paddingTop="@dimen/recipe_item_pading_bottom">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/recipeImageContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/item_recipe_image_height" />
+                android:layout_height="@dimen/item_recipe_image_height"
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/nameWithImage"
@@ -29,7 +27,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:layout_alignParentBottom="true"
+                android:textColor="@android:color/white"
                 android:gravity="center"
+                android:background="#55000000"
                 android:padding="@dimen/item_recipe_tv_name_padding"
                 android:textSize="@dimen/item_recipe_text_size_with_image" />
         </RelativeLayout>
@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:visibility="gone"
             android:maxLines="2"
             android:ellipsize="end"
             android:padding="@dimen/item_recipe_tv_name_padding"

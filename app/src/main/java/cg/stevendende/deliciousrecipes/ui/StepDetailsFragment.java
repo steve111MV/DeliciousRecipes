@@ -105,7 +105,7 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     ViewGroup linearLayoutDetails;
     LinearLayout linearLayoutClic;
     private boolean inErrorState;
-    private String DEFAULT_IMAGE = "http://image.tmdb.org/t/p/w300/gCrELZiSAmiBOKBsvGnPi0RIdcH.jpg";
+    private String DEFAULT_IMAGE = "https://bigoven-res.cloudinary.com/image/upload/lowfat-vegetable-lasagna-1336994.jpg";
 
 
     /**
@@ -244,11 +244,6 @@ public class StepDetailsFragment extends Fragment implements EventListener,
                 loadDefaultImage();
 
                 //if recipe's image is available
-            } else if (mRecipeStep.getImage() != null && !mRecipeStep.getImage().isEmpty()) {
-                mImageView.setVisibility(View.VISIBLE);
-                mPlayerView.setVisibility(View.GONE);
-
-                loadDefaultImage();
             } else {
                 mImageView.setVisibility(View.VISIBLE);
                 mPlayerView.setVisibility(View.GONE);
@@ -358,9 +353,7 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public void onPause() {
         super.onPause();
         try {
-            if (Util.SDK_INT <= 23) {
-                releasePlayer();
-            }
+            releasePlayer();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -370,9 +363,7 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     public void onStop() {
         super.onStop();
         try {
-            if (Util.SDK_INT > 23) {
                 releasePlayer();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -389,13 +380,15 @@ public class StepDetailsFragment extends Fragment implements EventListener,
     }
 
     void releasePlayer() throws Exception {
-        playbackPosition = mExoPlayer.getCurrentPosition();
-        currentWindow = mExoPlayer.getCurrentWindowIndex();
-        playWhenReady = mExoPlayer.getPlayWhenReady();
-        mExoPlayer.removeListener(componentListener);
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if (mExoPlayer != null) {
+            playbackPosition = mExoPlayer.getCurrentPosition();
+            currentWindow = mExoPlayer.getCurrentWindowIndex();
+            playWhenReady = mExoPlayer.getPlayWhenReady();
+            mExoPlayer.removeListener(componentListener);
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
     private void loadVideo(String videoUrl) throws OutOfMemoryError {
@@ -425,6 +418,12 @@ public class StepDetailsFragment extends Fragment implements EventListener,
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
+        try {
+            releasePlayer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         outState.putParcelable(EXTRA_RECIPE_STEP, mRecipeStep);
         outState.putBoolean(SAVE_KEY_PLAY_WHEN_READY, playWhenReady);
         outState.putLong(SAVE_KEY_PLAY_BACK_POSITION, playbackPosition);

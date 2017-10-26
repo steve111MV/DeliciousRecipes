@@ -134,8 +134,7 @@ public class RecipesContract {
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+RecipesContract.RecipeStepEntry._ID,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
                 RecipesContract.RecipeStepEntry.TABLE_NAME+"."+ RecipeStepEntry.COLUMN_VIDEO_URL,
-                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_IMAGE_URL,
-                RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_STEP_IMAGE_URL
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_IMAGE_URL
         };
 
         public static final String[] COLUMNS_STEP_DETAILS = new String[]{
@@ -143,8 +142,7 @@ public class RecipesContract {
                 RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_SHORT_DESCRIPTION,
                 RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_VIDEO_URL,
                 RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_IMAGE_URL,
-                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_DESCRIPTION,
-                RecipesContract.RecipeEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_STEP_IMAGE_URL
+                RecipesContract.RecipeStepEntry.TABLE_NAME + "." + RecipeStepEntry.COLUMN_DESCRIPTION
         };
 
         public static final int INDEX_ID = 0;

@@ -11,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,7 @@ public class RecipesFragment extends Fragment implements
     public static final int LOADER_ID = 0;
     public static final String ACTION_MAIN_ACTIVITY = "cg.stevendende.deliciousrecipes.action.mainactivity";
 
-    GridLayoutManager mGridLayoutManager;
+    StaggeredGridLayoutManager mGridLayoutManager;
     RecipesCursorRecyclerAdapter mCursorAdapter;
 
     @SuppressWarnings("WeakerAccess")
@@ -47,11 +48,9 @@ public class RecipesFragment extends Fragment implements
         ButterKnife.bind(this, rootview);
 
         final int SPAN_COUNT = getResources().getInteger(R.integer.recipes_span_count);
-        mGridLayoutManager = new GridLayoutManager(
-                getActivity(),
+        mGridLayoutManager = new StaggeredGridLayoutManager(
                 SPAN_COUNT,
-                LinearLayoutManager.VERTICAL,
-                false);
+                LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
 
         mCursorAdapter = new RecipesCursorRecyclerAdapter();
