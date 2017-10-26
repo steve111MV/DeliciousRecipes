@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -241,7 +242,12 @@ public class StepDetailsFragment extends Fragment implements EventListener,
                 mImageView.setVisibility(View.VISIBLE);
                 mPlayerView.setVisibility(View.GONE);
 
-                loadDefaultImage();
+                Glide.with(getActivity())
+                        .load(mRecipeStep.getThumbnailUrl())
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .into(mImageView);
 
                 //if recipe's image is available
             } else {
